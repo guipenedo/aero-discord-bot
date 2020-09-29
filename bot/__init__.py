@@ -7,14 +7,14 @@ from fenix import fenix_client
 
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX)
 
-taskrss = TaskRss()
-tasknewuser = TaskNewUser()
+#taskrss = TaskRss()
+#tasknewuser = TaskNewUser()
 
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
-    taskrss.start()
-    tasknewuser.start()
+    #taskrss.start()
+    #tasknewuser.start()
     print("really sad debug msg")
 
 
@@ -43,7 +43,7 @@ async def on_command_error(ctx, error):
 
 
 bot.run(config.BOT_TOKEN)
-taskrss.stop()
-taskrss.join()
-tasknewuser.stop()
-tasknewuser.join()
+#taskrss.stop()
+#taskrss.join()
+#tasknewuser.stop()
+#tasknewuser.join()
