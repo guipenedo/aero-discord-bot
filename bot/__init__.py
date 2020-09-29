@@ -1,7 +1,6 @@
 from discord.ext import commands
 
 import config
-from .utils import criar_cadeira, not_aero
 from .task_rss import TaskRss
 from fenix import fenix_client
 

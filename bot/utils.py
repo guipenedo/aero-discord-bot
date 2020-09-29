@@ -5,7 +5,7 @@ from database import session, Cadeira
 import discord
 
 
-def criar_cadeira(cadeira_id):
+async def criar_cadeira(cadeira_id):
     # Obter informação da cadeira
     cadeira = fenix_client.get_course(cadeira_id)
     if cadeira is None:
