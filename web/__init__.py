@@ -29,5 +29,5 @@ def auth():
     try:
         auth_sucess(user)
     except:
-        return "Erro: Utilizador de discord não encontrado."
+        return "Erro: Utilizador de discord não encontrado ou curso inválido."
     return "Sucesso. Já pode fechar esta página."

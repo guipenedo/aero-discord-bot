@@ -14,4 +14,6 @@ FENIX_REDIRECT_URI = os.environ.get("FENIX_REDIRECT_URI")
 
 POSTGRE_URI = os.environ.get("POSTGRE_URI")
 
+FEED_UPDATE_INTERVAL = os.environ.get("FEED_UPDATE_INTERVAL")
+
 MSG_JOIN = os.environ.get("MSG_JOIN")

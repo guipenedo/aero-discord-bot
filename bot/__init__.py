@@ -3,7 +3,8 @@ from discord.ext import commands
 
 from database import Session, engine, Base, Cadeira
 import config
-from .utils import criar_cadeira
+from .utils import criar_cadeira, not_aero
+from .task_rss import TaskRss
 
 Base.metadata.create_all(engine)
 session = Session()
@@ -14,9 +15,11 @@ fenix_client = fenixedu.FenixEduClient(fen_config)
 
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX)
 
+
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
+    TaskRss().start()
 
 
 def get_auth_url(member):
@@ -47,9 +50,12 @@ async def auth_sucess(user):
     if duser is None:
         raise Exception()
 
+    person = fenix_client.get_person(user)
+    if not_aero(person):
+        raise Exception()
+
     curriculum = fenix_client.get_person_curriculum(user)
     cadeiras = fenix_client.get_person_courses(user)
-    person = fenix_client.get_person(user)
 
     guild = bot.get_guild(config.BOT_GUILD)
 
