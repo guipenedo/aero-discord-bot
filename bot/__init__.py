@@ -27,6 +27,7 @@ def format_msg(msg, params):
 
 @bot.event
 async def on_member_join(member):
+    print("sad debug msg")
     await member.create_dm()
     url = get_auth_url(member)
     await member.dm_channel.send(format_msg(config.MSG_JOIN, {'name': member.display_name, 'url': url}))
