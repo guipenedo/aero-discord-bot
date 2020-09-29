@@ -10,9 +10,11 @@ import bot
 
 class TaskNewUser(Thread):
     def __init__(self):
+        super(TaskNewUser, self).__init__()
         self.run_thread = True
 
     def run(self):
+        self.run_thread = True
         while self.run_thread:
             users = session.query(User).filter(User.initialized is False).all()
             for user in users:

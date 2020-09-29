@@ -12,6 +12,7 @@ session = Session()
 
 class TaskRss(Thread):
     def __init__(self):
+        super(TaskRss, self).__init__()
         self.run_thread = True
 
     def run(self):
