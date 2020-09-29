@@ -1,6 +1,8 @@
 import config
-from bot import bot, fenix_client, session
-from datetime.date import today
+from bot import bot
+from fenix import fenix_client
+from database import session, Cadeira
+import discord
 
 
 def criar_cadeira(cadeira_id):
@@ -24,12 +26,12 @@ def criar_cadeira(cadeira_id):
         drole: discord.PermissionOverwrite(read_messages=True)
     }
     category = "temp"       # TODO: get year
-    dchannel = await guild.create_text_channel(dchannel_name, overwrites=overwrites category=category)
+    dchannel = await guild.create_text_channel(name, overwrites=overwrites, category=category)
     
     # Adicionar cadeira à base de dados
-    db_cadeira = Cadeira(cadeira_id, cadeira["acronym"], cadeira["name"], cadeira["academicTerm"], today(), cadeira["announcementLink"], dchannel.id, drole.id)
+    db_cadeira = Cadeira(cadeira_id, cadeira["acronym"], cadeira["name"], cadeira["academicTerm"], cadeira["announcementLink"], dchannel.id, drole.id)
     session.add(db_cadeira)
-    session.comit()
+    session.commit()
 
     return db_cadeira
 

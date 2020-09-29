@@ -41,12 +41,11 @@ class Cadeira(Base):
     channel_id = Column('channel_id', Integer)
     role_id = Column('role_id', Integer)
 
-    def __init__(self, cadeira_id, acronym, name, academic_term, last_updated, feed_link, channel_id, role_id):
+    def __init__(self, cadeira_id, acronym, name, academic_term, feed_link, channel_id, role_id):
         self.cadeira_id = cadeira_id
         self.acronym = acronym
         self.name = name
         self.academic_term = academic_term
-        self.last_updated = last_updated
         self.feed_link = feed_link
         self.channel_id = channel_id
         self.role_id = role_id
