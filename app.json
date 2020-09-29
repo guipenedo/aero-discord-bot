@@ -1,0 +1,63 @@
+{
+	"name": "aero-discord-bot",
+	"description": "Um bot de discord para obter automaticamente informação da plataforma FénixEdu e exibi-la num servidor de discord.",
+	"repository": "https://github.com/guipenedo/aero-discord-bot.git",
+	"keywords": [
+		"discord",
+		"bot",
+		"rss",
+		"fenix",
+		"ist",
+		"tecnico",
+        "aero",
+        "aerotec"
+	],
+	"addons": [{
+          "plan": "heroku-postgresql"
+        }
+	],
+	"env": {
+		"BOT_TOKEN": {
+			"description": "Token do bot de discord. Obter aqui: https://discordapp.com/developers/applications/."
+		},
+		"BOT_GUILD": {
+			"description": "Guild/server discord. O ID pode ser obtido em developer mode (https://discordia.me/developer-mode) carregando com o botão do lado direito no channel -> copy id."
+		},
+		"BOT_CMD_PREFIX": {
+			"description": "O prefixo para os comandos do bot. Por exemplo, lista de comando com !help",
+			"value": "!"
+		},
+		"MSG_JOIN": {
+			"description": "Formato para as mensagens de login. Ver documentação para uma lista de tags disponíveis.",
+			"value": "Bem vindo ao discord de AERO, {name}.\\nPor favor carrega no link abaixo para associares a tua conta do Fénix:\\n{url}"
+		},
+		"FENIX_URL": {
+			"description": "URL para a API do Fénix (o default está para a API do técnico).",
+			"value": "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/"
+		},
+		"FENIX_DEGREE": {
+			"description": "ID do curso/degree. Pode ser obtido em FENIX_URL/degrees. (Default: MEAer)",
+			"value": "2761663971480"
+		},
+		"FENIX_CLIENT_ID": {
+		},
+		"FENIX_CLIENT_SECRET": {
+		},
+		"FENIX_REDIRECT_URI": {
+		},
+		"FEED_UPDATE_INTERVAL": {
+			"description": "Intervalo de tempo em segundos entre pedidos para procurar novos anúncios do Fénix.",
+			"value": "30"
+		}
+	},
+	"formation": {
+		"worker": {
+			"quantity": 1,
+			"size": "free"
+		},
+		"web": {
+			"quantity": 1,
+			"size": "free"
+		}
+	}
+}
