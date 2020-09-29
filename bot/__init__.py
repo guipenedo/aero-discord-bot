@@ -1,17 +1,9 @@
-import fenixedu
 from discord.ext import commands
 
-from database import Session, engine, Base, Cadeira
 import config
 from .utils import criar_cadeira, not_aero
 from .task_rss import TaskRss
-
-Base.metadata.create_all(engine)
-session = Session()
-
-fen_config = fenixedu.FenixEduConfiguration(config.FENIX_CLIENT_ID, config.FENIX_REDIRECT_URI,
-                                            config.FENIX_CLIENT_SECRET, config.FENIX_BASE_URL)
-fenix_client = fenixedu.FenixEduClient(fen_config)
+from fenix import fenix_client
 
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX)
 
@@ -43,33 +35,6 @@ async def on_member_join(member):
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You do not have the correct role for this command.')
-
-
-async def auth_sucess(user):
-    duser = bot.get_user(user.user_id)
-    if duser is None:
-        raise Exception()
-
-    person = fenix_client.get_person(user)
-    if not_aero(person):
-        raise Exception()
-
-    curriculum = fenix_client.get_person_curriculum(user)
-    cadeiras = fenix_client.get_person_courses(user)
-
-    guild = bot.get_guild(config.BOT_GUILD)
-
-    new_roles = []
-    for cadeira in cadeiras["enrolments"]:
-        cadeira_id = int(cadeira["id"])
-        db_cadeira = session.query(Cadeira).get(cadeira_id)
-        if db_cadeira is None:
-            db_cadeira = criar_cadeira(cadeira_id)
-        new_roles.append(guild.get_role(db_cadeira.role_id))
-    duser.add_roles(new_roles)
-
-    await duser.create_dm()
-    await duser.dm_channel.send("Auth concluída!")
 
 
 bot.run(config.BOT_TOKEN)

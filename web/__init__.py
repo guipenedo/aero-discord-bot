@@ -1,10 +1,7 @@
 from flask import Flask, request
-from bot import fenix_client, auth_sucess
+from fenix import fenix_client
 
-from database import Session, engine, Base, User
-
-Base.metadata.create_all(engine)
-session = Session()
+from database import session, User
 
 app = Flask(__name__)
 

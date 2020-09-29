@@ -9,6 +9,8 @@ import config
 engine = create_engine(config.DATABASE_URL)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
+Base.metadata.create_all(engine)
+session = Session()
 
 
 class User(Base):
