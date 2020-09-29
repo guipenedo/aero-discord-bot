@@ -1,5 +1,5 @@
 import config
-from bot import bot
+import bot
 from fenix import fenix_client
 from database import session, Cadeira
 import discord
@@ -12,7 +12,7 @@ async def criar_cadeira(cadeira_id):
         raise Exception()
 
     name = cadeira["name"].lower().replace(' ', '-')   # TODO: is this necessary?
-    guild = bot.get_guild(config.BOT_GUILD)
+    guild = bot.bot.get_guild(config.BOT_GUILD)
 
     # TODO: verificar se o role já existe
     # Criar role

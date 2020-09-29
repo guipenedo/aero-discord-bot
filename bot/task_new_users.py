@@ -1,11 +1,11 @@
 import time
 from threading import Thread
 from database import User
-from bot import bot
 from database import session, Cadeira
 from fenix import fenix_client
 from .utils import not_aero, criar_cadeira
 import config
+import bot
 
 
 class TaskNewUser(Thread):
@@ -13,7 +13,7 @@ class TaskNewUser(Thread):
         while True:
             users = session.query(User).filter(User.initialized is False).all()
             for user in users:
-                duser = bot.get_user(user.user_id)
+                duser = bot.bot.get_user(user.user_id)
                 if duser is None:
                     session.delete(user)
                     continue

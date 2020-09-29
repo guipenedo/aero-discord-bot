@@ -2,6 +2,7 @@ from discord.ext import commands
 
 import config
 from .task_rss import TaskRss
+from .task_new_users import TaskNewUser
 from fenix import fenix_client
 
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX)
@@ -11,6 +12,7 @@ bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX)
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
     TaskRss().start()
+    TaskNewUser().start()
 
 
 def get_auth_url(member):
