@@ -9,7 +9,7 @@ import bot
 
 
 class TaskNewUser(Thread):
-    async def run(self):
+    def run(self):
         while True:
             users = session.query(User).filter(User.initialized is False).all()
             for user in users:
@@ -20,8 +20,8 @@ class TaskNewUser(Thread):
 
                 person = fenix_client.get_person(user)
                 if not_aero(person):
-                    await duser.create_dm()
-                    await duser.dm_channel.send("Neste momento, os registos estão limitados aos estudantes de aeroespacial. Sorry ;(")
+                    duser.create_dm()
+                    duser.dm_channel.send("Neste momento, os registos estão limitados aos estudantes de aeroespacial. Sorry ;(")
                     session.delete(user)
                     continue
 
@@ -35,15 +35,15 @@ class TaskNewUser(Thread):
                     cadeira_id = int(cadeira["id"])
                     db_cadeira = session.query(Cadeira).get(cadeira_id)
                     if db_cadeira is None:
-                        db_cadeira = await criar_cadeira(cadeira_id)
+                        db_cadeira = criar_cadeira(cadeira_id)
                     new_roles.append(guild.get_role(db_cadeira.role_id))
                 duser.add_roles(new_roles)
 
                 user.initialized = True
                 session.commit()
 
-                await duser.create_dm()
-                await duser.dm_channel.send("Auth concluída!")
+                duser.create_dm()
+                duser.dm_channel.send("Auth concluída!")
             if len(users):
                 session.commit()
             time.sleep(10)

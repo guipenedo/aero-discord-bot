@@ -16,7 +16,7 @@ async def criar_cadeira(cadeira_id):
 
     # TODO: verificar se o role já existe
     # Criar role
-    drole = await guild.create_role(name)
+    drole = guild.create_role(name)
 
     # TODO: verificar se já há um channel com o mesmo nome
     # Criar channel
@@ -26,7 +26,7 @@ async def criar_cadeira(cadeira_id):
         drole: discord.PermissionOverwrite(read_messages=True)
     }
     category = "temp"       # TODO: get year
-    dchannel = await guild.create_text_channel(name, overwrites=overwrites, category=category)
+    dchannel = guild.create_text_channel(name, overwrites=overwrites, category=category)
     
     # Adicionar cadeira à base de dados
     db_cadeira = Cadeira(cadeira_id, cadeira["acronym"], cadeira["name"], cadeira["academicTerm"], cadeira["announcementLink"], dchannel.id, drole.id)
