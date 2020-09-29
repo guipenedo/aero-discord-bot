@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Integer
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.types import Date
+from sqlalchemy.types import Date, Boolean
 
 import config
 
@@ -18,6 +18,7 @@ class User(Base):
     access_token = Column('access_token', String)
     refresh_token = Column('refresh_token', String)
     token_expires = Column('token_expires', Integer)
+    initialized = Column('initialized', Boolean, default=False)
 
     def __init__(self, user_id, access_token, refresh_token, token_expires):
         self.user_id = user_id
