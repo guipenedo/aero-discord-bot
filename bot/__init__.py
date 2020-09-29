@@ -1,8 +1,9 @@
 import fenixedu
 from discord.ext import commands
 
-from database import Session, engine, Base
+from database import Session, engine, Base, Cadeira
 import config
+from .utils import criar_cadeira
 
 Base.metadata.create_all(engine)
 session = Session()
@@ -51,8 +52,15 @@ async def auth_sucess(user):
     person = fenix_client.get_person(user)
 
     guild = bot.get_guild(config.BOT_GUILD)
-    roles = guild.roles
 
+    new_roles = []
+    for cadeira in cadeiras["enrolments"]:
+        cadeira_id = int(cadeira["id"])
+        db_cadeira = session.query(Cadeira).get(cadeira_id)
+        if db_cadeira is None:
+            db_cadeira = criar_cadeira(cadeira_id)
+        new_roles.append(guild.get_role(db_cadeira.role_id))
+    duser.add_roles(new_roles)
 
 
 bot.run(config.BOT_TOKEN)
