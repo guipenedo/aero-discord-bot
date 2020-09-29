@@ -28,7 +28,7 @@ class TaskNewUser(Thread):
                 # curriculum = fenix_client.get_person_curriculum(user)
                 cadeiras = fenix_client.get_person_courses(user)
 
-                guild = bot.get_guild(config.BOT_GUILD)
+                guild = bot.bot.get_guild(config.BOT_GUILD)
 
                 new_roles = []
                 for cadeira in cadeiras["enrolments"]:
