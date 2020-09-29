@@ -11,8 +11,11 @@ session = Session()
 
 
 class TaskRss(Thread):
+    def __init__(self):
+        self.run_thread = True
+
     def run(self):
-        while True:
+        while self.run_thread:
             for cadeira in session.query(Cadeira).all():
                 # TODO: fetch new rss articles and send to bot
                 feed = feedparser.parse(cadeira.feed_link)
@@ -22,3 +25,6 @@ class TaskRss(Thread):
 
                 continue
             time.sleep(config.FEED_UPDATE_INTERVAL)
+
+    def stop(self):
+        self.run_thread = False

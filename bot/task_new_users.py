@@ -9,8 +9,11 @@ import bot
 
 
 class TaskNewUser(Thread):
+    def __init__(self):
+        self.run_thread = True
+
     def run(self):
-        while True:
+        while self.run_thread:
             users = session.query(User).filter(User.initialized is False).all()
             for user in users:
                 duser = bot.bot.get_user(user.user_id)
@@ -47,3 +50,6 @@ class TaskNewUser(Thread):
             if len(users):
                 session.commit()
             time.sleep(10)
+
+    def stop(self):
+        self.run_thread = False
