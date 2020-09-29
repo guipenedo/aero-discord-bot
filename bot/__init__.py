@@ -68,5 +68,8 @@ async def auth_sucess(user):
         new_roles.append(guild.get_role(db_cadeira.role_id))
     duser.add_roles(new_roles)
 
+    await duser.create_dm()
+    await duser.dm_channel.send("Auth concluída!")
+
 
 bot.run(config.BOT_TOKEN)
