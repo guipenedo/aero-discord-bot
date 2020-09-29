@@ -13,6 +13,7 @@ async def on_ready():
     print(f'{bot.user} has connected to Discord!')
     TaskRss().start()
     TaskNewUser().start()
+    print("really sad debug msg")
 
 
 def get_auth_url(member):
