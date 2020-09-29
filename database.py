@@ -6,7 +6,7 @@ from sqlalchemy.types import Date
 
 import config
 
-engine = create_engine(config.POSTGRE_URI)
+engine = create_engine(config.DATABASE_URL)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
