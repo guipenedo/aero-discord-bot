@@ -14,7 +14,12 @@ class TaskNewUser(Thread):
         super(TaskNewUser, self).__init__()
         self.run_thread = True
 
-    async def run_async(self):
+    def run(self):
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(self._run())
+        loop.close()
+
+    async def _run(self):
         self.run_thread = True
         while self.run_thread:
             users = session.query(User).filter(User.initialized is False).all()
@@ -27,8 +32,7 @@ class TaskNewUser(Thread):
 
                 person = fenix_client.get_person(user)
                 if not_aero(person):
-                    await duser.send(
-                        "Neste momento, os registos estão limitados aos estudantes de aeroespacial. Sorry ;(")
+                    await duser.send("Neste momento, os registos estão limitados aos estudantes de aeroespacial. Sorry ;(")
                     session.delete(user)
                     continue
 
@@ -47,14 +51,10 @@ class TaskNewUser(Thread):
                 user.initialized = True
                 session.commit()
 
-                await duser.send("Auth concluída!")
+                duser.send("Auth concluída!")
             if len(users):
                 session.commit()
             time.sleep(10)
-
-    def run(self):
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(asyncio.wait([self.run_async()]))
 
     def stop(self):
         self.run_thread = False
