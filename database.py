@@ -9,8 +9,12 @@ import config
 engine = create_engine(config.DATABASE_URL)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
-Base.metadata.create_all(engine)
 session = Session()
+
+
+def init_db():
+    Base.metadata.create_all(engine)
+    session.commit()
 
 
 class User(Base):
@@ -32,14 +36,14 @@ class User(Base):
 class Cadeira(Base):
     __tablename__ = "cadeiras"
 
-    cadeira_id = Column(Integer, primary_key=True, autoincrement=False)
+    cadeira_id = Column(BigInteger, primary_key=True, autoincrement=False)
     acronym = Column(String)
     name = Column(String)
     academic_term = Column(String)
     last_updated = Column(Date)
     feed_link = Column(String)
-    channel_id = Column(Integer)
-    role_id = Column(Integer)
+    channel_id = Column(BigInteger)
+    role_id = Column(BigInteger)
 
     def __init__(self, cadeira_id, acronym, name, academic_term, feed_link, channel_id, role_id):
         self.cadeira_id = cadeira_id

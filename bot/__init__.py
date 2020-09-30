@@ -3,6 +3,7 @@ import discord
 
 import config
 from fenix import fenix_client
+from database import init_db
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX, intents=intents)
@@ -16,10 +17,11 @@ for extension in cogs:
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
+    init_db()
 
 
 def get_auth_url(member):
-    return fenix_client.get_authentication_url() + "state=" + str(member.id)
+    return fenix_client.get_authentication_url(str(member.id))
 
 
 def format_msg(msg, params):

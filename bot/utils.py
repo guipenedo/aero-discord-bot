@@ -1,32 +1,29 @@
 import config
-import bot
 from fenix import fenix_client
 from database import session, Cadeira
 import discord
 
 
-async def criar_cadeira(cadeira_id):
+async def criar_cadeira(cadeira_id, bot):
     # Obter informação da cadeira
     cadeira = fenix_client.get_course(cadeira_id)
     if cadeira is None:
         raise Exception()
 
     name = cadeira["name"].lower().replace(' ', '-')   # TODO: is this necessary?
-    guild = bot.bot.get_guild(config.BOT_GUILD)
+    guild = bot.get_guild(config.BOT_GUILD)
 
     # TODO: verificar se o role já existe
     # Criar role
-    drole = guild.create_role(name)
+    drole = await guild.create_role(name=name)
 
     # TODO: verificar se já há um channel com o mesmo nome
     # Criar channel
-    # TODO: é preciso pôr todos os outros roles a False?
     overwrites = {
         guild.default_role: discord.PermissionOverwrite(read_messages=False),
         drole: discord.PermissionOverwrite(read_messages=True)
     }
-    category = "temp"       # TODO: get year
-    dchannel = guild.create_text_channel(name, overwrites=overwrites, category=category)
+    dchannel = await guild.create_text_channel(name, overwrites=overwrites, category=None)
     
     # Adicionar cadeira à base de dados
     db_cadeira = Cadeira(cadeira_id, cadeira["acronym"], cadeira["name"], cadeira["academicTerm"], cadeira["announcementLink"], dchannel.id, drole.id)
