@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv(".env")
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-BOT_GUILD = os.environ.get("BOT_GUILD")
+BOT_GUILD = int(os.environ.get("BOT_GUILD"))
 BOT_CMD_PREFIX = os.environ.get("BOT_CMD_PREFIX")
 
 FENIX_BASE_URL = os.environ.get("FENIX_BASE_URL")
