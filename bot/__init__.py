@@ -25,7 +25,7 @@ def get_auth_url(member):
 
 
 def format_msg(msg, params):
-    for tag, val in params:
+    for tag, val in params.items():
         msg = msg.replace("{" + tag + "}", val)
     return msg
 
