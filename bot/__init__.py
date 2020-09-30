@@ -21,7 +21,7 @@ async def on_ready():
 
 
 def get_auth_url(member):
-    return fenix_client.get_authentication_url() + "state=" + member.id
+    return fenix_client.get_authentication_url() + "state=" + str(member.id)
 
 
 def format_msg(msg, params):
