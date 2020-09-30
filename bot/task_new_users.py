@@ -53,7 +53,8 @@ class TaskNewUser(Thread):
             time.sleep(10)
 
     def run(self):
-        asyncio.run(self.run_async())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(asyncio.wait([self.run_async()]))
 
     def stop(self):
         self.run_thread = False
