@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, BigInteger
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -16,11 +16,11 @@ session = Session()
 class User(Base):
     __tablename__ = "users"
 
-    user_id = Column(Integer, primary_key=True, autoincrement=False)
-    access_token = Column('access_token', String)
-    refresh_token = Column('refresh_token', String)
-    token_expires = Column('token_expires', Integer)
-    initialized = Column('initialized', Boolean, default=False)
+    user_id = Column(BigInteger, primary_key=True, autoincrement=False)
+    access_token = Column(String)
+    refresh_token = Column(String)
+    token_expires = Column(Integer)
+    initialized = Column(Boolean, default=False)
 
     def __init__(self, user_id, access_token, refresh_token, token_expires):
         self.user_id = user_id
@@ -33,13 +33,13 @@ class Cadeira(Base):
     __tablename__ = "cadeiras"
 
     cadeira_id = Column(Integer, primary_key=True, autoincrement=False)
-    acronym = Column('acronym', String)
-    name = Column('name', String)
-    academic_term = Column('academic_term', String)
-    last_updated = Column("last_updated", Date)
-    feed_link = Column('feed_link', String)
-    channel_id = Column('channel_id', Integer)
-    role_id = Column('role_id', Integer)
+    acronym = Column(String)
+    name = Column(String)
+    academic_term = Column(String)
+    last_updated = Column(Date)
+    feed_link = Column(String)
+    channel_id = Column(Integer)
+    role_id = Column(Integer)
 
     def __init__(self, cadeira_id, acronym, name, academic_term, feed_link, channel_id, role_id):
         self.cadeira_id = cadeira_id
