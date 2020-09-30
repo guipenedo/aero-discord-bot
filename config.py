@@ -16,4 +16,4 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 
 FEED_UPDATE_INTERVAL = int(os.environ.get("FEED_UPDATE_INTERVAL"))
 
-MSG_JOIN = os.environ.get("MSG_JOIN")
+MSG_JOIN = os.environ.get("MSG_JOIN").replace('\\n', '\n')

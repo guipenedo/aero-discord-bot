@@ -25,7 +25,7 @@ class TaskNewUser(Thread):
         print("starting async task")
         while self.run_thread:
             print("running")
-            users = session.query(User).filter(not User.initialized).all()
+            users = session.query(User).filter(User.initialized==False).all()
             guild = bot.bot.get_guild(config.BOT_GUILD)
             for user in users:
                 print(user.user_id)
