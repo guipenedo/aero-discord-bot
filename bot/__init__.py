@@ -2,19 +2,20 @@ from discord.ext import commands
 import discord
 
 import config
-from .task_rss import TaskRss
-from .task_new_users import TaskNewUser
 from fenix import fenix_client
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX, intents=intents)
 
+cogs = ['bot.task_rss', 'bot.task_new_users']
+
+for extension in cogs:
+    bot.load_extension(extension)
+
 
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
-    bot.add_cog(TaskRss(bot))
-    bot.add_cog(TaskNewUser(bot))
 
 
 def get_auth_url(member):
@@ -37,6 +38,5 @@ async def on_member_join(member):
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You do not have the correct role for this command.')
-
 
 bot.run(config.BOT_TOKEN)
