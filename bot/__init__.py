@@ -9,15 +9,12 @@ from fenix import fenix_client
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX, intents=intents)
 
-taskrss = TaskRss()
-tasknewuser = TaskNewUser()
-
 
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
-    taskrss.start()
-    tasknewuser.start()
+    bot.add_cog(TaskRss(bot))
+    bot.add_cog(TaskNewUser(bot))
 
 
 def get_auth_url(member):
@@ -43,7 +40,3 @@ async def on_command_error(ctx, error):
 
 
 bot.run(config.BOT_TOKEN)
-taskrss.stop()
-taskrss.join()
-tasknewuser.stop()
-tasknewuser.join()

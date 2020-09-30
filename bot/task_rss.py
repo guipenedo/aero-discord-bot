@@ -1,31 +1,30 @@
-from threading import Thread
 import config
-import time
-from database import Session, engine, Base, Cadeira
+from database import session, Cadeira
 import feedparser
 import datetime
-import bot
 
-Base.metadata.create_all(engine)
-session = Session()
+from discord.ext import tasks, commands
 
 
-class TaskRss(Thread):
-    def __init__(self):
-        super(TaskRss, self).__init__()
-        self.run_thread = True
+class TaskRss(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.rss.start()
 
-    def run(self):
-        while self.run_thread:
+    def cog_unload(self):
+        self.rss.cancel()
+
+    @tasks.loop(seconds=config.FEED_UPDATE_INTERVAL)
+    async def rss(self):
+        while True:
             for cadeira in session.query(Cadeira).all():
                 # TODO: fetch new rss articles and send to bot
                 feed = feedparser.parse(cadeira.feed_link)
                 for e in feed.entries:
-                    if cadeira.last_updated is None or cadeira.last_updated < datetime.datetime(*(e.updated_parsed[0:6])):
-                        channel = bot.bot.get_channel(cadeira.channel_id)
+                    if cadeira.last_updated is None or cadeira.last_updated < datetime.datetime(
+                            *(e.updated_parsed[0:6])):
+                        channel = self.bot.get_channel(cadeira.channel_id)
 
-                continue
-            time.sleep(config.FEED_UPDATE_INTERVAL)
-
-    def stop(self):
-        self.run_thread = False
+    @rss.before_loop
+    async def before_rss(self):
+        await self.bot.wait_until_ready()
