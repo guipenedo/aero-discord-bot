@@ -12,6 +12,7 @@ bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX, intents=intents)
 taskrss = TaskRss()
 tasknewuser = TaskNewUser()
 
+
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
@@ -31,9 +32,8 @@ def format_msg(msg, params):
 
 @bot.event
 async def on_member_join(member):
-    await member.create_dm()
     url = get_auth_url(member)
-    await member.dm_channel.send(format_msg(config.MSG_JOIN, {'name': member.display_name, 'url': url}))
+    member.send(format_msg(config.MSG_JOIN, {'name': member.display_name, 'url': url}))
 
 
 @bot.event
