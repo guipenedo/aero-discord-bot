@@ -10,21 +10,30 @@ async def criar_cadeira(cadeira_id, bot):
     if cadeira is None:
         raise Exception()
 
+    # Get name
     name = cadeira["name"].lower().replace(' ', '-')   # TODO: is this necessary?
+
+    # Get guild
     guild = bot.get_guild(config.BOT_GUILD)
 
-    # TODO: verificar se o role já existe
     # Criar role
-    drole = await guild.create_role(name=name)
+    for drole in guild.roles:
+        if drole.name == name:
+            break
+    else:
+        drole = await guild.create_role(name=name)
 
-    # TODO: verificar se já há um channel com o mesmo nome
     # Criar channel
-    overwrites = {
-        guild.default_role: discord.PermissionOverwrite(read_messages=False),
-        drole: discord.PermissionOverwrite(read_messages=True)
-    }
-    dchannel = await guild.create_text_channel(name, overwrites=overwrites, category=None)
-    
+    for dchannel in guild.channels:
+        if dchannel.name == name:
+            break
+    else:
+        overwrites = {
+            guild.default_role: discord.PermissionOverwrite(read_messages=False),
+            drole: discord.PermissionOverwrite(read_messages=True)
+        }
+        dchannel = await guild.create_text_channel(name, overwrites=overwrites, category=None)
+
     # Adicionar cadeira à base de dados
     db_cadeira = Cadeira(cadeira_id, cadeira["acronym"], cadeira["name"], cadeira["academicTerm"], cadeira["announcementLink"], dchannel.id, drole.id)
     session.add(db_cadeira)

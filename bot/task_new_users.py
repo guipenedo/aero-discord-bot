@@ -25,8 +25,11 @@ class TaskNewUser(commands.Cog):
                 print("deleting user")
                 #session.delete(user)
                 continue
+            # TODO: o novo/refreshed access token está a ser guardado?
             # TODO: ask for new auth if access token no longer valid
+            print("newuser", user.access_token)
             person = fenix_client.get_person(user)
+            print(person)
             if not_aero(person):
                 await duser.send(
                     "Neste momento, os registos estão limitados aos estudantes de aeroespacial. Sorry ;(")
@@ -44,7 +47,7 @@ class TaskNewUser(commands.Cog):
                 role = guild.get_role(db_cadeira.role_id)
                 new_roles.append(role)
             if new_roles:
-                await duser.add_roles(new_roles)
+                await duser.add_roles(*new_roles)
 
             # user.initialized = True
             await duser.send("Auth concluída!")

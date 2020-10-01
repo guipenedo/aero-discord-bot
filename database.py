@@ -4,6 +4,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.types import Date, Boolean
 
+from datetime import date
+
 import config
 
 engine = create_engine(config.DATABASE_URL)
@@ -40,7 +42,7 @@ class Cadeira(Base):
     acronym = Column(String)
     name = Column(String)
     academic_term = Column(String)
-    last_updated = Column(Date)
+    last_updated = Column(Date, default=date.today())
     feed_link = Column(String)
     channel_id = Column(BigInteger)
     role_id = Column(BigInteger)
