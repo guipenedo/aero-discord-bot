@@ -15,5 +15,7 @@ FENIX_REDIRECT_URI = os.environ.get("FENIX_REDIRECT_URI")
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 FEED_UPDATE_INTERVAL = int(os.environ.get("FEED_UPDATE_INTERVAL"))
+FEEDS_CATEGORY_NAME = os.environ.get("FEEDS_CATEGORY_NAME").lower()
+COURSES_DISC_CATEGORY_NAME = os.environ.get("COURSES_DISC_CATEGORY_NAME").lower()
 
 MSG_JOIN = os.environ.get("MSG_JOIN").replace('\\n', '\n')

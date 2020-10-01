@@ -48,6 +48,12 @@
 		"FEED_UPDATE_INTERVAL": {
 			"description": "Intervalo de tempo em segundos entre pedidos para procurar novos anúncios do Fénix.",
 			"value": "30"
+		},
+		"FEEDS_CATEGORY_NAME": {
+			"value": "anúncios"
+		},
+		"COURSES_DISC_CATEGORY_NAME": {
+			"value": "cadeiras"
 		}
 	},
 	"formation": {

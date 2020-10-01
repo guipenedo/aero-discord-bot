@@ -15,7 +15,7 @@ class TaskNewUser(commands.Cog):
     def cog_unload(self):
         self.newusers.cancel()
 
-    @tasks.loop(seconds=500)
+    @tasks.loop(seconds=10)
     async def newusers(self):
         users = session.query(User).filter(User.initialized == False).all()
         guild = self.bot.get_guild(config.BOT_GUILD)
@@ -25,32 +25,35 @@ class TaskNewUser(commands.Cog):
                 print("deleting user")
                 #session.delete(user)
                 continue
-            # TODO: o novo/refreshed access token está a ser guardado?
-            # TODO: ask for new auth if access token no longer valid
-            print("newuser", user.access_token)
             person = fenix_client.get_person(user)
-            print(person)
             if not_aero(person):
                 await duser.send(
                     "Neste momento, os registos estão limitados aos estudantes de aeroespacial. Sorry ;(")
-                #session.delete(user)
+                session.delete(user)
                 continue
-            # curriculum = fenix_client.get_person_curriculum(user)
             cadeiras = fenix_client.get_person_courses(user)
+            nomes_cadeiras = []
             new_roles = []
             for cadeira in cadeiras["enrolments"]:
                 cadeira_id = int(cadeira["id"])
                 db_cadeira = session.query(Cadeira).get(cadeira_id)
                 if db_cadeira is None:
-                    print("criando cadeira")
                     db_cadeira = await criar_cadeira(cadeira_id, self.bot)
                 role = guild.get_role(db_cadeira.role_id)
+                channel = guild.get_channel(db_cadeira.channel_id)
+                # in case either the channel or the role was deleted
+                if channel is None or role is None:
+                    session.delete(db_cadeira)
+                    db_cadeira = await criar_cadeira(cadeira_id, self.bot)
+                    role = guild.get_role(db_cadeira.role_id)
+                nomes_cadeiras.append(db_cadeira.name)
                 new_roles.append(role)
             if new_roles:
                 await duser.add_roles(*new_roles)
 
-            # user.initialized = True
-            await duser.send("Auth concluída!")
+            user.initialized = True
+            await duser.send("Auth concluída! \nFoste adicionado às seguintes cadeiras: ***"
+                             + ', '.join(nomes_cadeiras) + "***")
         if len(users):
             session.commit()
 
