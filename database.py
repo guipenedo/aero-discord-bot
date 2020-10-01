@@ -2,9 +2,7 @@ from sqlalchemy import Column, String, Integer, BigInteger
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.types import Date, Boolean
-
-from datetime import date
+from sqlalchemy.types import DateTime, Boolean
 
 import config
 
@@ -42,7 +40,7 @@ class Cadeira(Base):
     acronym = Column(String)
     name = Column(String)
     academic_term = Column(String)
-    last_updated = Column(Date, default=date.today())
+    last_updated = Column(DateTime)
     feed_link = Column(String)
     channel_id = Column(BigInteger)
     role_id = Column(BigInteger)
