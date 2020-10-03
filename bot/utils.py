@@ -14,11 +14,11 @@ async def get_or_create_category(guild, name, perms):
     return await guild.create_category(name, overwrites=overwrites)
 
 
-async def get_or_create_role(guild, name):
+async def get_or_create_role(guild, name, **fields):
     for drole in guild.roles:
         if drole.name == name:
             return drole
-    return await guild.create_role(name=name)
+    return await guild.create_role(name=name, **fields)
 
 
 async def get_or_create_channel(guild, cat, name, overwrites):
@@ -50,7 +50,7 @@ async def criar_cadeira(cadeira_id, bot):
                                                 discord.PermissionOverwrite(read_messages=False))
 
     # Criar role
-    drole = await get_or_create_role(guild, name)
+    drole = await get_or_create_role(guild, name, colour=discord.Colour.dark_gold(), mentionable=True)
 
     # Criar channels
     await get_or_create_channel(guild, cadeiras_cat, name,
@@ -76,7 +76,7 @@ async def get_or_create_year_role(year, bot):
                                       discord.PermissionOverwrite(read_messages=False))
 
     # Get the role to see this year's channel
-    drole = await get_or_create_role(guild, year)
+    drole = await get_or_create_role(guild, year, colour=discord.Colour.blue(), hoist=True, mentionable=True)
 
     # Make sure the channel exists
     await get_or_create_channel(guild, years_cat, year,

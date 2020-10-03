@@ -89,8 +89,9 @@ class TaskNewUser(commands.Cog):
                 await duser.remove_roles(*remove_roles)
 
             user.initialized = True
-            await duser.send("Foste adicionado às seguintes cadeiras: ***"
-                             + ', '.join(nomes_cadeiras) + "***")
+            if nomes_cadeiras:
+                await duser.send("Foste adicionado às seguintes cadeiras: ***"
+                                 + ', '.join(nomes_cadeiras) + "***")
             if initialized is False:
                 await duser.send("Auth concluída!")
         if users:
