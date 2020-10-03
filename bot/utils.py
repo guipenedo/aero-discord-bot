@@ -2,6 +2,8 @@ import config
 from fenix import fenix_client
 from database import session, Cadeira
 import discord
+from math import ceil
+import re
 
 
 async def get_or_create_category(guild, name, perms):
@@ -84,3 +86,29 @@ def format_msg(msg, params):
     for tag, val in params.items():
         msg = msg.replace("{" + tag + "}", val)
     return msg
+
+
+def get_number_enrollements(person):
+    first_year = ""
+    terms = []
+
+    for role in person["roles"]:
+        if role["type"] == "STUDENT":
+            for reg in role["registrations"]:
+                if int(reg["id"]) == int(config.FENIX_DEGREE):
+                    terms.extend(reg["academicTerms"])
+
+        elif role["type"] == "ALUMNI":
+            for reg in role["concludedRegistrations"]:
+                if int(reg["id"]) == int(config.FENIX_DEGREE):
+                    terms.extend(reg["academicTerms"])
+
+    terms = [re.search("\d+/\d+", term).group() for term in terms]
+    first = min(terms)
+
+    terms = list(fenix_client.get_academic_terms())
+    current = max(terms)
+
+    n = int(current.split('/')[0])- int(first.split('/')[0])
+
+    return n
