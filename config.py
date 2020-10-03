@@ -19,3 +19,4 @@ FEEDS_CATEGORY_NAME = os.environ.get("FEEDS_CATEGORY_NAME").lower()
 COURSES_DISC_CATEGORY_NAME = os.environ.get("COURSES_DISC_CATEGORY_NAME").lower()
 
 MSG_JOIN = os.environ.get("MSG_JOIN").replace('\\n', '\n')
+MSG_FEED = os.environ.get("MSG_FEED").replace('\\n', '\n')

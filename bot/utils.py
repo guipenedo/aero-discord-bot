@@ -78,3 +78,9 @@ def not_aero(person):
                 if int(reg["id"]) == int(config.FENIX_DEGREE):
                     return False
     return True
+
+
+def format_msg(msg, params):
+    for tag, val in params.items():
+        msg = msg.replace("{" + tag + "}", val)
+    return msg

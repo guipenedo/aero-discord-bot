@@ -4,6 +4,7 @@ import discord
 import config
 from fenix import fenix_client
 from database import init_db
+from .utils import format_msg
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX, intents=intents)
@@ -22,12 +23,6 @@ async def on_ready():
 
 def get_auth_url(member):
     return fenix_client.get_authentication_url(str(member.id))
-
-
-def format_msg(msg, params):
-    for tag, val in params.items():
-        msg = msg.replace("{" + tag + "}", val)
-    return msg
 
 
 @bot.event

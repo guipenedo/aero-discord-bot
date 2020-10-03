@@ -31,6 +31,9 @@
 			"description": "Formato para as mensagens de login. Ver documentação para uma lista de tags disponíveis.",
 			"value": "Bem vindo ao discord de AERO, {name}.\\nPor favor carrega no link abaixo para associares a tua conta do Fénix:\\n{url}"
 		},
+		"MSG_FEED": {
+			"value": "<:ist:601199845801459742> **[{course_acronym}] {course_name}**\n__{title}__\n\n{description}\n\n{date} - *{author}*\n\n<{link}>"
+		},
 		"FENIX_BASE_URL": {
 			"description": "URL para a API do Fénix (o default está para a API do técnico).",
 			"value": "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/"
