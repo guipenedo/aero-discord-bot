@@ -9,7 +9,7 @@ from .utils import format_msg
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX, intents=intents)
 
-cogs = ['bot.task_rss', 'bot.task_new_users', 'bot.task_update_users']
+cogs = ['bot.task_rss', 'bot.task_user_roles']
 
 for extension in cogs:
     bot.load_extension(extension)

@@ -14,12 +14,13 @@ FENIX_REDIRECT_URI = os.environ.get("FENIX_REDIRECT_URI")
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-NEW_USER_INTERVAL = os.environ.get("NEW_USER_INTERVAL")
-UPDATE_USER_INTERVAL = os.environ.get("UPDATE_USER_INTERVAL")
-
+NEW_USER_INTERVAL = int(os.environ.get("NEW_USER_INTERVAL"))
+UPDATE_USER_INTERVAL = int(os.environ.get("UPDATE_USER_INTERVAL"))
 FEED_UPDATE_INTERVAL = int(os.environ.get("FEED_UPDATE_INTERVAL"))
+
 FEEDS_CATEGORY_NAME = os.environ.get("FEEDS_CATEGORY_NAME").lower()
 COURSES_DISC_CATEGORY_NAME = os.environ.get("COURSES_DISC_CATEGORY_NAME").lower()
+YEARS_DISC_CATEGORY_NAME = os.environ.get("YEARS_DISC_CATEGORY_NAME").lower()
 
 MSG_JOIN = os.environ.get("MSG_JOIN").replace('\\n', '\n')
 MSG_FEED = os.environ.get("MSG_FEED").replace('\\n', '\n')
