@@ -35,8 +35,8 @@
 			"value": "<:ist:601199845801459742> **[{course_acronym}] {course_name}**\n__{title}__\n\n{description}\n\n{date} - *{author}*\n\n<{link}>"
 		},
 		"FENIX_BASE_URL": {
-			"description": "URL para a API do Fénix (o default está para a API do técnico).",
-			"value": "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/"
+			"description": "URL para a API do Fénix (o default está para a API do técnico) - sem a porção /api",
+			"value": "https://fenix.tecnico.ulisboa.pt/"
 		},
 		"FENIX_DEGREE": {
 			"description": "ID do curso/degree. Pode ser obtido em FENIX_URL/degrees. (Default: MEAer)",
