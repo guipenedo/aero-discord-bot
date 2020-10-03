@@ -2,8 +2,6 @@ import config
 from fenix import fenix_client
 from database import session, Cadeira
 import discord
-from math import ceil
-import re
 
 
 async def get_or_create_category(guild, name, perms):
@@ -69,17 +67,40 @@ async def criar_cadeira(cadeira_id, bot):
     return db_cadeira
 
 
-def not_aero(person):
+async def get_or_create_year_role(year, bot):
+    # Get guild
+    guild = bot.get_guild(config.BOT_GUILD)
+
+    # Get years discussion category
+    years_cat = await get_or_create_category(guild, config.YEARS_DISC_CATEGORY_NAME,
+                                      discord.PermissionOverwrite(read_messages=False))
+
+    # Get the role to see this year's channel
+    drole = await get_or_create_role(guild, year)
+
+    # Make sure the channel exists
+    await get_or_create_channel(guild, years_cat, year,
+                                {drole: discord.PermissionOverwrite(read_messages=True)})
+    # Return the role
+    return drole
+
+
+# returns registrations (Student or alumni) for our FENIX_DEGREE
+def get_registration(person):
     for role in person["roles"]:
         if role["type"] == "STUDENT":
             for reg in role["registrations"]:
                 if int(reg["id"]) == int(config.FENIX_DEGREE):
-                    return False
+                    return reg
         elif role["type"] == "ALUMNI":
             for reg in role["concludedRegistrations"]:
                 if int(reg["id"]) == int(config.FENIX_DEGREE):
-                    return False
-    return True
+                    return reg
+    return None
+
+
+def not_aero(person):
+    return get_registration(person) is None
 
 
 def format_msg(msg, params):
@@ -88,27 +109,8 @@ def format_msg(msg, params):
     return msg
 
 
-def get_number_enrollements(person):
-    first_year = ""
-    terms = []
-
-    for role in person["roles"]:
-        if role["type"] == "STUDENT":
-            for reg in role["registrations"]:
-                if int(reg["id"]) == int(config.FENIX_DEGREE):
-                    terms.extend(reg["academicTerms"])
-
-        elif role["type"] == "ALUMNI":
-            for reg in role["concludedRegistrations"]:
-                if int(reg["id"]) == int(config.FENIX_DEGREE):
-                    terms.extend(reg["academicTerms"])
-
-    terms = [re.search("\d+/\d+", term).group() for term in terms]
-    first = min(terms)
-
-    terms = list(fenix_client.get_academic_terms())
-    current = max(terms)
-
-    n = int(current.split('/')[0])- int(first.split('/')[0])
-
-    return n
+def get_first_enrollment(person):
+    registration = get_registration(person)
+    if registration is None:
+        return None
+    return min([x[-9:] for x in registration["academicTerms"]]).replace("/", "-")

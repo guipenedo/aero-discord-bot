@@ -57,6 +57,9 @@
 		},
 		"COURSES_DISC_CATEGORY_NAME": {
 			"value": "cadeiras"
+		},
+		"YEARS_DISC_CATEGORY_NAME": {
+			"value": "discussão"
 		}
 	},
 	"formation": {
