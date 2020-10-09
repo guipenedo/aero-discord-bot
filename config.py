@@ -2,6 +2,11 @@ import os
 from dotenv import load_dotenv
 load_dotenv(".env")
 
+
+def clean_msg(msg):
+    return msg.replace('\\n', '\n')
+
+
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 BOT_GUILD = int(os.environ.get("BOT_GUILD"))
 BOT_CMD_PREFIX = os.environ.get("BOT_CMD_PREFIX")
@@ -22,13 +27,14 @@ FEEDS_CATEGORY_NAME = os.environ.get("FEEDS_CATEGORY_NAME").lower()
 COURSES_DISC_CATEGORY_NAME = os.environ.get("COURSES_DISC_CATEGORY_NAME").lower()
 YEARS_DISC_CATEGORY_NAME = os.environ.get("YEARS_DISC_CATEGORY_NAME").lower()
 
-MSG_JOIN = os.environ.get("MSG_JOIN").replace('\\n', '\n')
-MSG_FEED = os.environ.get("MSG_FEED").replace('\\n', '\n')
+WEB_ERROR = clean_msg(os.environ.get("WEB_ERROR"))
+WEB_SUCCESS = clean_msg(os.environ.get("WEB_SUCCESS"))
 
+MSG_JOIN = clean_msg(os.environ.get("MSG_JOIN"))
+MSG_FEED = clean_msg(os.environ.get("MSG_FEED"))
+MSG_AERO_ONLY = clean_msg(os.environ.get("MSG_AERO_ONLY"))
+MSG_ADDED_CHANNEL_COURSES = clean_msg(os.environ.get("MSG_ADDED_CHANNEL_COURSES"))
+MSG_ADDED_CHANNEL_YEAR = clean_msg(os.environ.get("MSG_ADDED_CHANNEL_YEAR"))
 
-WEB_ERROR = os.environ.get("WEB_ERROR")
-WEB_SUCCESS = os.environ.get("WEB_SUCCESS")
-BOT_CMD_ERROR = os.environ.get("BOT_CMD_ERROR")
-MSG_AERO_ONLY = os.environ.get("MSG_AERO_ONLY")
-MSG_ADDED_CHANNEL_COURSES = os.environ.get("MSG_ADDED_CHANNEL_COURSES")
-BOT_AUTH_SUCCESS = os.environ.get("BOT_AUTH_SUCCESS")
+BOT_CMD_ERROR = clean_msg(os.environ.get("BOT_CMD_ERROR"))
+BOT_AUTH_SUCCESS = clean_msg(os.environ.get("BOT_AUTH_SUCCESS"))

@@ -1,6 +1,6 @@
 from database import session, Cadeira, User
 from fenix import fenix_client
-from .utils import not_aero, criar_cadeira, get_first_enrollment, get_or_create_year_role
+from .utils import not_aero, criar_cadeira, get_first_enrollment, get_or_create_year_role, format_msg
 import config
 
 from discord.ext import tasks, commands
@@ -88,7 +88,7 @@ class TaskNewUser(commands.Cog):
 
             user.initialized = True
             if nomes_cadeiras:
-                await duser.send(format_msg(MSG_ADDED_CHANNEL_COURSES, {'courses': ', '.join(nomes_cadeiras)}))
+                await duser.send(format_msg(config.MSG_ADDED_CHANNEL_COURSES, {'courses': ', '.join(nomes_cadeiras)}))
             if initialized is False:
                 await duser.send(config.BOT_AUTH_SUCCESS)
         if users:

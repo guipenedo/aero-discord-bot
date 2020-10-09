@@ -73,7 +73,7 @@ async def get_or_create_year_role(year, bot):
 
     # Get years discussion category
     years_cat = await get_or_create_category(guild, config.YEARS_DISC_CATEGORY_NAME,
-                                      discord.PermissionOverwrite(read_messages=False))
+                                             discord.PermissionOverwrite(read_messages=False))
 
     # Get the role to see this year's channel
     drole = await get_or_create_role(guild, year, colour=discord.Colour.blue(), hoist=True, mentionable=True)
