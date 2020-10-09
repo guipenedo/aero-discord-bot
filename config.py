@@ -24,3 +24,11 @@ YEARS_DISC_CATEGORY_NAME = os.environ.get("YEARS_DISC_CATEGORY_NAME").lower()
 
 MSG_JOIN = os.environ.get("MSG_JOIN").replace('\\n', '\n')
 MSG_FEED = os.environ.get("MSG_FEED").replace('\\n', '\n')
+
+
+WEB_ERROR = os.environ.get("WEB_ERROR")
+WEB_SUCCESS = os.environ.get("WEB_SUCCESS")
+BOT_CMD_ERROR = os.environ.get("BOT_CMD_ERROR")
+MSG_AERO_ONLY = os.environ.get("MSG_AERO_ONLY")
+MSG_ADDED_CHANNEL_COURSES = os.environ.get("MSG_ADDED_CHANNEL_COURSES")
+BOT_AUTH_SUCCESS = os.environ.get("BOT_AUTH_SUCCESS")

@@ -1,0 +1,15 @@
+[Unit]
+Description=Bot for AERO-IST Discord service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+StartLimitIntervalSec=0
+User=PREENCHER COM USERNAME istXXXXXX
+ExecStart=COMANDO PARA INICIAR O BOT
+
+[Install]
+WantedBy=multi-user.target

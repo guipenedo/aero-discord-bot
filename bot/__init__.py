@@ -34,6 +34,6 @@ async def on_member_join(member):
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send('You do not have the correct role for this command.')
+        await ctx.send(config.BOT_CMD_ERROR)
 
 bot.run(config.BOT_TOKEN)

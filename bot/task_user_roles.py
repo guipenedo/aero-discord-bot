@@ -34,8 +34,7 @@ class TaskNewUser(commands.Cog):
                 continue
             person = fenix_client.get_person(user)
             if not_aero(person):
-                await duser.send(
-                    "Neste momento, os registos estão limitados aos estudantes de aeroespacial. Sorry ;(")
+                await duser.send(config.MSG_AERO_ONLY)
                 session.delete(user)
                 continue
 
@@ -50,8 +49,7 @@ class TaskNewUser(commands.Cog):
                 if first_enroll:
                     year_role = await get_or_create_year_role(first_enroll, self.bot)
                     await duser.add_roles(year_role)
-                    await duser.send("Foste adicionado ao channel de discussão dos caloiros de ***"
-                                     + first_enroll + "***")
+                    await duser.send(format_msg(config.MSG_ADDED_CHANNEL_YEAR, {'first_enroll': first_enroll}))
 
             # Loop through courses
             for cadeira in cadeiras["enrolments"]:
@@ -90,10 +88,9 @@ class TaskNewUser(commands.Cog):
 
             user.initialized = True
             if nomes_cadeiras:
-                await duser.send("Foste adicionado às seguintes cadeiras: ***"
-                                 + ', '.join(nomes_cadeiras) + "***")
+                await duser.send(format_msg(MSG_ADDED_CHANNEL_COURSES, {'courses': ', '.join(nomes_cadeiras)}))
             if initialized is False:
-                await duser.send("Auth concluída!")
+                await duser.send(config.BOT_AUTH_SUCCESS)
         if users:
             session.commit()
 

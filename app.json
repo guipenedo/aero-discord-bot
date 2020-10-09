@@ -60,6 +60,28 @@
 		},
 		"YEARS_DISC_CATEGORY_NAME": {
 			"value": "discussão"
+		},
+
+		"WEB_ERROR": {
+			"value": "Erro ao tentar obter um access token. Por favor tente novamente."
+		},
+		"WEB_SUCCESS": {
+			"value": "Sucesso. Já pode fechar esta página."
+		},
+		"BOT_CMD_ERROR": {
+			"value": "You do not have the correct role for this command."
+		},
+		"MSG_AERO_ONLY": {
+			"value": "Neste momento, os registos estão limitados aos estudantes de aeroespacial. Sorry ;("
+		},
+		"MSG_ADDED_CHANNEL_YEAR": {
+			"value": "Foste adicionado ao channel de discussão dos caloiros de ***{first_enroll}***"
+		},
+		"MSG_ADDED_CHANNEL_COURSES": {
+			"value": "Foste adicionado às seguintes cadeiras: ***{courses}***"
+		},
+		"BOT_AUTH_SUCCESS": {
+			"value": "Auth concluída!"
 		}
 	},
 	"formation": {
