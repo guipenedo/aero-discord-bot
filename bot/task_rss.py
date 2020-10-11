@@ -6,7 +6,7 @@ import time
 from htmllaundry import strip_markup
 
 from discord.ext import tasks, commands
-from .utils import format_msg
+from .utils import format_msg, timezone
 
 
 class TaskRss(commands.Cog):
@@ -31,7 +31,7 @@ class TaskRss(commands.Cog):
                         "course_acronym": cadeira.acronym,
                         "course_name": cadeira.name,
                         "title": e.title,
-                        "date": time.strftime('%d/%m/%Y %H:%M', e.updated_parsed),
+                        "date": time.strftime('%d/%m/%Y %H:%M', timezone(e.updated_parsed)),
                         "author": e.author,
                         "link": e.link
                     })

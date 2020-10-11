@@ -6,7 +6,6 @@ load_dotenv(".env")
 def clean_msg(msg):
     return msg.replace('\\n', '\n')
 
-
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 BOT_GUILD = int(os.environ.get("BOT_GUILD"))
 BOT_CMD_PREFIX = os.environ.get("BOT_CMD_PREFIX")
@@ -29,6 +28,8 @@ YEARS_DISC_CATEGORY_NAME = os.environ.get("YEARS_DISC_CATEGORY_NAME").lower()
 
 WEB_ERROR = clean_msg(os.environ.get("WEB_ERROR"))
 WEB_SUCCESS = clean_msg(os.environ.get("WEB_SUCCESS"))
+
+TIMEZONE = os.environ.get("TIMEZONE")
 
 MSG_JOIN = clean_msg(os.environ.get("MSG_JOIN"))
 MSG_FEED = clean_msg(os.environ.get("MSG_FEED"))

@@ -114,3 +114,13 @@ def get_first_enrollment(person):
     if registration is None:
         return None
     return min([x[-9:] for x in registration["academicTerms"]]).replace("/", "-")
+
+
+def timezone(before):
+    tz = pytz.timezone(config.TIMEZONE)
+    date = time.mktime(before)  
+    # naive datetimes are not associated to a timezone
+    naive_date = datetime.datetime.fromtimestamp(date)
+    # use tz.localize to make naive datetimes "timezone aware"
+    after = tz.localize(naive_date, is_dst=None)
+    return after.timetuple()

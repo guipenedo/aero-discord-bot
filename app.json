@@ -71,6 +71,9 @@
 		"BOT_CMD_ERROR": {
 			"value": "You do not have the correct role for this command."
 		},
+		"TIMEZONE": {
+			"value": "Europe/Lisbon"
+		},	
 		"MSG_AERO_ONLY": {
 			"value": "Neste momento, os registos estão limitados aos estudantes de aeroespacial. Sorry ;("
 		},
