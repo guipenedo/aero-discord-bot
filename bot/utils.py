@@ -2,6 +2,9 @@ import config
 from fenix import fenix_client
 from database import session, Cadeira
 import discord
+import pytz
+import time
+import datetime
 
 
 async def get_or_create_category(guild, name, perms):
