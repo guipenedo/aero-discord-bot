@@ -4,7 +4,6 @@ import feedparser
 import datetime
 import time
 from htmllaundry import strip_markup
-import pytz
 
 from discord.ext import tasks, commands
 from .utils import format_msg, timezone
