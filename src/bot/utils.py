@@ -83,7 +83,7 @@ async def get_or_create_year_role(year, bot):
 
     # Make sure the channel exists
     await get_or_create_channel(guild, years_cat, year,
-                                {drole: discord.PermissionOverwrite(read_messages=True)})
+                                {drole: discord.PermissionOverwrite(read_messages=True, send_messages=True)})
     # Return the role
     return drole
 
