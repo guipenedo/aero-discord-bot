@@ -5,6 +5,7 @@ from .utils import not_aero, criar_cadeira, get_first_enrollment, get_or_create_
 import config
 
 from discord.ext import tasks, commands
+from discord import Forbidden
 
 
 class TaskNewUser(commands.Cog):
@@ -51,8 +52,11 @@ class TaskNewUser(commands.Cog):
                     year_role = await get_or_create_year_role(first_enroll, self.bot)
                     await duser.add_roles(year_role)
                     await duser.send(format_msg(config.MSG_ADDED_CHANNEL_YEAR, {'first_enroll': first_enroll}))
-                names = person["name"].split(" ")
-                await duser.edit(nick=names[0] + " " + names[-1])
+                try:
+                    names = person["name"].split(" ")
+                    await duser.edit(nick=names[0] + " " + names[-1])
+                except Forbidden:
+                    pass
 
             # Loop through courses
             for cadeira in cadeiras["enrolments"]:
