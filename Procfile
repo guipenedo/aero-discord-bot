@@ -1,2 +1,2 @@
-web: gunicorn web:app --log-file=-
-worker: python -m bot
+web: gunicorn --pythonpath src src.web:app --log-file=-
+worker: python src/run_bot.py

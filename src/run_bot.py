@@ -4,7 +4,7 @@ import discord
 import config
 from fenix import fenix_client
 from database import init_db
-from .utils import format_msg
+from bot.utils import format_msg
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX, intents=intents)

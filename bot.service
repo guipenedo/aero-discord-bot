@@ -9,7 +9,7 @@ Restart=always
 RestartSec=1
 StartLimitIntervalSec=0
 User=PREENCHER COM USERNAME istXXXXXX
-ExecStart=COMANDO PARA INICIAR O BOT
+ExecStart=venv/bin/python src/run_bot.py
 
 [Install]
 WantedBy=multi-user.target
