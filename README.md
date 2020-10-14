@@ -6,8 +6,6 @@ O bot, após autenticação dos utilizadores com uma conta do fénix, cria e adi
 Para utilizar a app é necessário criar um bot de discord e adicioná-lo ao servidor onde se pretende que este corra. Instruções [aqui]().
 
 ## Configuração
-A configuração da aplicação é realizada em dois sítios diferentes:
-* No ficheiro .env, para deployments feitos via git clone (copiar o ficheiro .env.default para .env e editá-lo)
-* Nas config vars, para deployments para o heroku (Settings -> Config vars -> Reveal config vars)
+A configuração da aplicação é realizada através de environment variables. Estas podem estar definidas num ficheiro *.env* ou diretamente no ambiente. O ficheiro *.env.default* é um modelo que pode ser copiado para *.env* e as configurações alteradas, para quem quiser seguir esta opção.
 
-Uma descrição detalhada das várias opções e seus valores pode ser encontrada [aqui](https://github.com/guipenedo/aero-discord-bot/wiki/Configura%C3%A7%C3%A3o).
+Uma descrição detalhada das várias opções e dos seus valores pode ser encontrada [aqui](https://github.com/guipenedo/aero-discord-bot/wiki/Configura%C3%A7%C3%A3o).

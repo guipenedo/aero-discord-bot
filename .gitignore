@@ -141,3 +141,5 @@ dmypy.json
 cython_debug/
 
 connect_db.sh
+
+src/send_message.py
