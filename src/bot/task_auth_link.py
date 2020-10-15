@@ -1,9 +1,7 @@
 import config
 from database import session, User
-from fenix import fenix_client
 from discord.ext import tasks, commands
-from run_bot import get_auth_url
-from .utils import format_msg
+from .utils import format_msg, get_auth_url
 
 
 class TaskAuthLink(commands.Cog):
@@ -13,7 +11,6 @@ class TaskAuthLink(commands.Cog):
 
     def cog_unload(self):
         self.notauthusers.cancel()
-
 
     async def notify_auth_users(self):
         guild = self.bot.get_guild(config.BOT_GUILD)
@@ -25,7 +22,6 @@ class TaskAuthLink(commands.Cog):
             if member.id not in members_db:
                 url = get_auth_url(member)
                 await member.send(format_msg(config.MSG_REJOIN, {'name': member.display_name, 'url': url}))
-
 
     # this task notifies users that are not authenticated yet
     @tasks.loop(hours=config.NOTIFY_USER_INTERVAL)
