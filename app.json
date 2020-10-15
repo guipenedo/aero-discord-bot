@@ -31,6 +31,10 @@
 			"description": "Formato para as mensagens de login. Ver documentação para uma lista de tags disponíveis.",
 			"value": "Bem vindo ao discord de AERO, {name}.\\nPor favor carrega no link abaixo para associares a tua conta do Fénix:\\n{url}"
 		},
+		"MSG_REJOIN": {
+			"description": "Formato para as mensagens de aviso para quem ainda não concluiu a autenticação.",
+			"value": "Ainda não concluíste a autenticação do fénix ou esta expirou, {name}.\\nPor favor carrega no seguinte link:\\n{url}"
+		},
 		"MSG_FEED": {
 			"value": "<:ist:601199845801459742> **[{course_acronym}] {course_name}**\n__{title}__\n\n{description}\n\n{date} - *{author}*\n\n<{link}>"
 		},
@@ -85,6 +89,10 @@
 		},
 		"BOT_AUTH_SUCCESS": {
 			"value": "Auth concluída!"
+		},
+		"NOTIFY_USER_INTERVAL": {
+			"description": "Intervalo de tempo em horas entre mensagens de aviso para utilizadores que ainda não completaram a autenticação.",
+			"value": "6"
 		}
 	},
 	"formation": {

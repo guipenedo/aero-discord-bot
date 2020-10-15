@@ -13,10 +13,12 @@ class TaskNewUser(commands.Cog):
         self.bot = bot
         self.newusers.start()
         self.existingusers.start()
+        self.notauthusers.start()
 
     def cog_unload(self):
         self.newusers.cancel()
         self.existingusers.cancel()
+        self.notauthusers.cancel()
 
     async def update_users(self, initialized=False):
         users = session.query(User).filter(User.initialized == initialized).all()
@@ -103,6 +105,17 @@ class TaskNewUser(commands.Cog):
         if users:
             session.commit()
 
+
+    async def notify_auth_users(self):
+        members_discord = [member.id for member in guild.members]
+        members_db = session.query(User.user_id).all()
+
+        for member in members_discord:
+            if member not in members_db:
+                url = get_auth_url(member)
+                await member.send(format_msg(config.MSG_REJOIN, {'name': member.display_name, 'url': url}))
+
+
     # this task adds new users
     @tasks.loop(seconds=config.NEW_USER_INTERVAL)
     async def newusers(self):
@@ -119,6 +132,15 @@ class TaskNewUser(commands.Cog):
 
     @existingusers.before_loop
     async def before_existingusers(self):
+        await self.bot.wait_until_ready()
+
+    # this task notifies users that are not authenticated yet
+    @tasks.loop(hours=config.NOTIFY_USER_INTERVAL)
+    async def notauthusers(self):
+        await self.notify_auth_users()
+
+    @notauthusers.before_loop
+    async def before_notauthusers(self):
         await self.bot.wait_until_ready()
 
 
