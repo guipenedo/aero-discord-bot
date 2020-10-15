@@ -15,13 +15,16 @@ class TaskAuthLink(commands.Cog):
     async def notify_auth_users(self):
         guild = self.bot.get_guild(config.BOT_GUILD)
 
-        members_discord = guild.members
+        members_discord = guild.getmembers()
         members_db = session.query(User.user_id).all()
 
         for member in members_discord:
             if member.id not in members_db:
-                url = get_auth_url(member)
-                await member.send(format_msg(config.MSG_REJOIN, {'name': member.display_name, 'url': url}))
+                try:
+                    url = get_auth_url(member)
+                    await member.send(format_msg(config.MSG_REJOIN, {'name': member.display_name, 'url': url}))
+                except:
+                    pass
 
     # this task notifies users that are not authenticated yet
     @tasks.loop(hours=config.NOTIFY_USER_INTERVAL)

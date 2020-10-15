@@ -12,7 +12,7 @@ class TaskNewUser(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.newusers.start()
-        self.existingusers.start()
+        #self.existingusers.start()
 
     def cog_unload(self):
         self.newusers.cancel()
@@ -38,7 +38,8 @@ class TaskNewUser(commands.Cog):
                 if "error" in person and "accessTokenInvalid" in person["error"]:
                     print("Deleting!! RESPONSE ERROR:")
                     print(person)
-                    session.delete(user)
+                    print(user.user_id)
+                    #session.delete(user)
                     continue
                 if not_aero(person):
                     await duser.send(config.MSG_AERO_ONLY)
