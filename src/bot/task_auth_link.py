@@ -16,7 +16,7 @@ class TaskAuthLink(commands.Cog):
         guild = self.bot.get_guild(config.BOT_GUILD)
 
         members_discord = guild.members
-        members_db = session.query(User.user_id).all()
+        members_db = [r.user_id for r in session.query(User.user_id).all()]
 
         for member in members_discord:
             if member.id not in members_db:
