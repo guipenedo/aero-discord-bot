@@ -15,7 +15,7 @@ class TaskAuthLink(commands.Cog):
     async def notify_auth_users(self):
         guild = self.bot.get_guild(config.BOT_GUILD)
 
-        members_discord = guild.members()
+        members_discord = guild.members
         members_db = session.query(User.user_id).all()
 
         for member in members_discord:
