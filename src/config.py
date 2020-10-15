@@ -19,6 +19,7 @@ FENIX_REDIRECT_URI = os.environ.get("FENIX_REDIRECT_URI")
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 NEW_USER_INTERVAL = int(os.environ.get("NEW_USER_INTERVAL"))
+NOTIFY_USER_INTERVAL = int(os.environ.get("NOTIFY_USER_INTERVAL"))
 UPDATE_USER_INTERVAL = int(os.environ.get("UPDATE_USER_INTERVAL"))
 FEED_UPDATE_INTERVAL = int(os.environ.get("FEED_UPDATE_INTERVAL"))
 
@@ -32,6 +33,7 @@ WEB_SUCCESS = clean_msg(os.environ.get("WEB_SUCCESS"))
 TIMEZONE = os.environ.get("TIMEZONE")
 
 MSG_JOIN = clean_msg(os.environ.get("MSG_JOIN"))
+MSG_REJOIN = clean_msg(os.environ.get("MSG_REJOIN"))
 MSG_FEED = clean_msg(os.environ.get("MSG_FEED"))
 MSG_AERO_ONLY = clean_msg(os.environ.get("MSG_AERO_ONLY"))
 MSG_ADDED_CHANNEL_COURSES = clean_msg(os.environ.get("MSG_ADDED_CHANNEL_COURSES"))

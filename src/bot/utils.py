@@ -135,3 +135,7 @@ def timezone(before):
     # use tz.localize to make naive datetimes "timezone aware"
     after = tz.localize(naive_date, is_dst=None)
     return after.timetuple()
+
+
+def get_auth_url(member):
+    return fenix_client.get_authentication_url(str(member.id))

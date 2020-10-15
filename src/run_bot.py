@@ -2,14 +2,13 @@ from discord.ext import commands
 import discord
 
 import config
-from fenix import fenix_client
 from database import init_db
-from bot.utils import format_msg
+from bot.utils import format_msg, get_auth_url
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX, intents=intents)
 
-cogs = ['bot.task_rss', 'bot.task_user_roles']
+cogs = ['bot.task_rss', 'bot.task_user_roles', 'bot.task_auth_link']
 
 for extension in cogs:
     bot.load_extension(extension)
@@ -24,10 +23,6 @@ async def on_ready():
     # embed=discord.Embed(title="Sobre o Bot :robot:", description="O <@601401283009577001> é um bot de discord criado por estudantes de aeroespacial. O bot, através da vossa conta do fénix <:ist:601199845801459742>, adiciona-vos ao channel de discussão do vosso ano e aos channels das cadeiras em que estão inscritos.\n\nCada cadeira tem dois channels:\n:arrow_forward: um de ***discussão*** :speech_left:, para discussão geral da cadeira\n:arrow_forward: um de ***anúncios*** :loudspeaker:, onde o bot publica em tempo real os anúncios do fénix <:ist:601199845801459742>\n\n:bangbang: Os vossos dados do fénix, para além das cadeiras e ano, não é gravada em nenhum local.\n\n[Todo o código do bot está disponível no GitHub, e aberto a contribuições.](https://github.com/guipenedo/aero-discord-bot)", color=0x9c3eff)
     # await bot.get_channel(764152890771898438).send(embed=embed)
     init_db()
-
-
-def get_auth_url(member):
-    return fenix_client.get_authentication_url(str(member.id))
 
 
 @bot.event

@@ -111,6 +111,7 @@ class TaskNewUser(commands.Cog):
         if users:
             session.commit()
 
+
     # this task adds new users
     @tasks.loop(seconds=config.NEW_USER_INTERVAL)
     async def newusers(self):
