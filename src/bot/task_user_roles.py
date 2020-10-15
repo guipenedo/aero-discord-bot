@@ -29,77 +29,85 @@ class TaskNewUser(commands.Cog):
 
         # Loop through users
         for user in users:
-            # Delete user from db if not in the guild
-            duser = guild.get_member(user.user_id)
-            if duser is None:
-                session.delete(user)
-                continue
-            person = fenix_client.get_person(user)
-            if not_aero(person):
-                await duser.send(config.MSG_AERO_ONLY)
-                session.delete(user)
-                continue
+                # Delete user from db if not in the guild
+                duser = guild.get_member(user.user_id)
+                if duser is None:
+                    session.delete(user)
+                    continue
+                person = fenix_client.get_person(user)
+                if "error" in person and "accessTokenInvalid" in person["error"]:
+                    print("Deleting!! RESPONSE ERROR:")
+                    print(person)
+                    session.delete(user)
+                    continue
+                if not_aero(person):
+                    await duser.send(config.MSG_AERO_ONLY)
+                    session.delete(user)
+                    continue
 
-            cadeiras = fenix_client.get_person_courses(user)
-            nomes_cadeiras = []
-            new_roles = []
-            user_roles = duser.roles
+                cadeiras = fenix_client.get_person_courses(user)
+                nomes_cadeiras = []
+                new_roles = []
+                user_roles = duser.roles
 
-            # first timer. add to the correct year discussion channel
-            if initialized is False:
-                first_enroll = get_first_enrollment(person)
-                if first_enroll:
-                    year_role = await get_or_create_year_role(first_enroll, self.bot)
-                    await duser.add_roles(year_role)
-                    await duser.send(format_msg(config.MSG_ADDED_CHANNEL_YEAR, {'first_enroll': first_enroll}))
-                try:
-                    names = person["name"].split(" ")
-                    await duser.edit(nick=names[0] + " " + names[-1])
-                except Forbidden:
-                    pass
+                # first timer. add to the correct year discussion channel
+                if initialized is False:
+                    first_enroll = get_first_enrollment(person)
+                    if first_enroll:
+                        year_role = await get_or_create_year_role(first_enroll, self.bot)
+                        await duser.add_roles(year_role)
+                        await duser.send(format_msg(config.MSG_ADDED_CHANNEL_YEAR, {'first_enroll': first_enroll}))
+                    try:
+                        print("Welcoming " + person["name"])
+                        names = person["name"].split(" ")
+                        await duser.edit(nick=names[0] + " " + names[-1])
+                    except Forbidden:
+                        pass
 
-            # Loop through courses
-            for cadeira in cadeiras["enrolments"]:
-                cadeira_id = int(cadeira["id"])
-                db_cadeira = session.query(Cadeira).get(cadeira_id)
-                # Create channel for course if it doesn't exist
-                if db_cadeira is None:
-                    db_cadeira = await criar_cadeira(cadeira_id, self.bot)
+                # Loop through courses
+                if "enrolments" not in cadeiras:
+                    continue
+                for cadeira in cadeiras["enrolments"]:
+                    cadeira_id = int(cadeira["id"])
+                    db_cadeira = session.query(Cadeira).get(cadeira_id)
+                    # Create channel for course if it doesn't exist
+                    if db_cadeira is None:
+                        db_cadeira = await criar_cadeira(cadeira_id, self.bot)
 
-                # Get (or create) role for this course
-                role = guild.get_role(db_cadeira.role_id)
-                channel = guild.get_channel(db_cadeira.channel_id)
-
-                # in case either the channel or the role was deleted
-                if channel is None or role is None:
-                    session.delete(db_cadeira)
-                    db_cadeira = await criar_cadeira(cadeira_id, self.bot)
+                    # Get (or create) role for this course
                     role = guild.get_role(db_cadeira.role_id)
-                if role not in user_roles:
-                    nomes_cadeiras.append(db_cadeira.name)
-                    new_roles.append(role)
-                else:
-                    user_roles.remove(role)
-            if new_roles:
-                await duser.add_roles(*new_roles)
+                    channel = guild.get_channel(db_cadeira.channel_id)
 
-            # look for roles from old cadeiras
-            remove_roles = []
-            for role in user_roles:
-                # check if this is a course role and not some random role
-                if role in all_cadeiras_roles:
-                    remove_roles.append(role)
-            # remove them
-            if remove_roles:
-                await duser.remove_roles(*remove_roles)
+                    # in case either the channel or the role was deleted
+                    if channel is None or role is None:
+                        session.delete(db_cadeira)
+                        db_cadeira = await criar_cadeira(cadeira_id, self.bot)
+                        role = guild.get_role(db_cadeira.role_id)
+                    if role and role not in user_roles:
+                        nomes_cadeiras.append(db_cadeira.name)
+                        new_roles.append(role)
+                    elif role:
+                        user_roles.remove(role)
+                if new_roles:
+                    await duser.add_roles(*new_roles)
 
-            user.initialized = True
-            if nomes_cadeiras:
-                await duser.send(format_msg(config.MSG_ADDED_CHANNEL_COURSES, {'courses': ', '.join(nomes_cadeiras)}))
-            if initialized is False:
-                auth_role = await get_or_create_role(guild, "auth")
-                await duser.add_roles(auth_role)
-                await duser.send(config.BOT_AUTH_SUCCESS)
+                # look for roles from old cadeiras
+                remove_roles = []
+                for role in user_roles:
+                    # check if this is a course role and not some random role
+                    if role in all_cadeiras_roles:
+                        remove_roles.append(role)
+                # remove them
+                if remove_roles:
+                    await duser.remove_roles(*remove_roles)
+
+                user.initialized = True
+                if nomes_cadeiras:
+                    await duser.send(format_msg(config.MSG_ADDED_CHANNEL_COURSES, {'courses': ', '.join(nomes_cadeiras)}))
+                if initialized is False:
+                    auth_role = await get_or_create_role(guild, "auth")
+                    await duser.add_roles(auth_role)
+                    await duser.send(config.BOT_AUTH_SUCCESS)
         if users:
             session.commit()
 
