@@ -18,7 +18,7 @@ class TaskAuthLink(commands.Cog):
         role = {"name": config.ROLE_AUTH_NAME, "id": config.ROLE_AUTH_ID}
 
         for member in members_discord:
-            if role.id not in [r.id for r in member.roles]:
+            if role["id"] not in [r.id for r in member.roles]:
                 try:
                     url = get_auth_url(member)
                     await member.send(format_msg(config.MSG_REJOIN, {'name': member.display_name, 'url': url}))
