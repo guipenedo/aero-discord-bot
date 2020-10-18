@@ -1,6 +1,6 @@
 import config
 from discord.ext import tasks, commands
-from .utils import format_msg, get_auth_url
+from .utils import format_msg, get_auth_url, get_or_create_role
 
 
 class TaskAuthLink(commands.Cog):
@@ -15,10 +15,10 @@ class TaskAuthLink(commands.Cog):
         guild = self.bot.get_guild(config.BOT_GUILD)
         members_discord = guild.members
 
-        role = {"name": config.ROLE_AUTH_NAME, "id": config.ROLE_AUTH_ID}
+        auth_role = await get_or_create_role(guild, config.ROLE_AUTH_NAME)
 
         for member in members_discord:
-            if role["id"] not in [r.id for r in member.roles]:
+            if auth_role not in member.roles:
                 try:
                     url = get_auth_url(member)
                     await member.send(format_msg(config.MSG_REJOIN, {'name': member.display_name, 'url': url}))
