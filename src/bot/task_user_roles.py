@@ -106,7 +106,7 @@ class TaskNewUser(commands.Cog):
                 if nomes_cadeiras:
                     await duser.send(format_msg(config.MSG_ADDED_CHANNEL_COURSES, {'courses': ', '.join(nomes_cadeiras)}))
                 if initialized is False:
-                    auth_role = await get_or_create_role(guild, "auth")
+                    auth_role = await get_or_create_role(guild, config.ROLE_AUTH_NAME)
                     await duser.add_roles(auth_role)
                     await duser.send(config.BOT_AUTH_SUCCESS)
         if users:
