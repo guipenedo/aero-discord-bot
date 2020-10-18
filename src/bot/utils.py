@@ -1,9 +1,10 @@
+import calendar
+
 import config
 from fenix import fenix_client
 from database import session, Cadeira
 import discord
 import pytz
-import time
 import datetime
 
 
@@ -129,11 +130,11 @@ def get_first_enrollment(person):
 
 def timezone(before):
     tz = pytz.timezone(config.TIMEZONE)
-    date = time.mktime(before)  
+    date = calendar.timegm(before)
     # naive datetimes are not associated to a timezone
-    naive_date = datetime.datetime.fromtimestamp(date)
+    naive_date = datetime.datetime.fromtimestamp(date, tz=datetime.timezone.utc)
     # use tz.localize to make naive datetimes "timezone aware"
-    after = tz.localize(naive_date, is_dst=None)
+    after = naive_date.replace(tzinfo=tz)
     return after.timetuple()
 
 
