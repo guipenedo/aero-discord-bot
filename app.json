@@ -93,6 +93,14 @@
 		"NOTIFY_USER_INTERVAL": {
 			"description": "Intervalo de tempo em horas entre mensagens de aviso para utilizadores que ainda não completaram a autenticação.",
 			"value": "6"
+		},
+		"ROLE_AUTH_NAME": {
+			"description": "Nome do role usado para identificar pessoas autenticadas.",
+			"value": "auth"
+		},
+		"ROLE_AUTH_ID": {
+			"description": "ID do role usado para identificar pessoas autenticadas.",
+			"value": "765989606121799740"
 		}
 	},
 	"formation": {

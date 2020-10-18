@@ -1,5 +1,4 @@
 import config
-from database import session, User
 from discord.ext import tasks, commands
 from .utils import format_msg, get_auth_url
 
@@ -14,12 +13,12 @@ class TaskAuthLink(commands.Cog):
 
     async def notify_auth_users(self):
         guild = self.bot.get_guild(config.BOT_GUILD)
-
         members_discord = guild.members
-        members_db = [r.user_id for r in session.query(User.user_id).all()]
+
+        role = {"name": config.ROLE_AUTH_NAME, "id": config.ROLE_AUTH_ID}
 
         for member in members_discord:
-            if member.id not in members_db:
+            if role.id not in [r.id for r in member.roles]:
                 try:
                     url = get_auth_url(member)
                     await member.send(format_msg(config.MSG_REJOIN, {'name': member.display_name, 'url': url}))
