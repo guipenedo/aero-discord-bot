@@ -43,4 +43,3 @@ BOT_CMD_ERROR = clean_msg(os.environ.get("BOT_CMD_ERROR"))
 BOT_AUTH_SUCCESS = clean_msg(os.environ.get("BOT_AUTH_SUCCESS"))
 
 ROLE_AUTH_NAME = os.environ.get("ROLE_AUTH_NAME")
-ROLE_AUTH_ID = int(os.environ.get("ROLE_AUTH_ID"))
