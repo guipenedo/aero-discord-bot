@@ -1,34 +1,33 @@
-from database import session, Cadeira, User
-from fenix import fenix_client
-from .utils import not_aero, criar_cadeira, get_first_enrollment, get_or_create_year_role, format_msg, \
-    get_or_create_role
-import config
-
-from discord.ext import tasks, commands
 from discord import Forbidden
+from discord.ext import tasks, commands
+
+import config
+from database import session_scope, Cadeira, User
+from fenix import fenix_client
+from .utils import not_aero, get_first_enrollment, get_or_create_year_role, format_msg, \
+    get_or_create_role, process_enrollments
 
 
 class TaskNewUser(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.newusers.start()
-        #self.existingusers.start()
 
     def cog_unload(self):
         self.newusers.cancel()
-        self.existingusers.cancel()
 
-    async def update_users(self, initialized=False):
-        users = session.query(User).filter(User.initialized == initialized).all()
-        guild = self.bot.get_guild(config.BOT_GUILD)
+    async def update_users(self):
+        with session_scope() as session:
+            users = session.query(User).filter(User.initialized == False).all()
+            guild = self.bot.get_guild(config.BOT_GUILD)
 
-        all_cadeiras_roles = []
-        # if we are updating existing users, remove all cadeiras first
-        if users and initialized:
-            all_cadeiras_roles = [guild.get_role(x.role_id) for x in session.query(Cadeira).all()]
+            all_cadeiras_roles = []
+            # if we are updating existing users, remove all cadeiras first
+            if users:
+                all_cadeiras_roles = [guild.get_role(x.role_id) for x in session.query(Cadeira).all()]
 
-        # Loop through users
-        for user in users:
+            # Loop through users
+            for user in users:
                 # Delete user from db if not in the guild
                 duser = guild.get_member(user.user_id)
                 if duser is None:
@@ -39,7 +38,7 @@ class TaskNewUser(commands.Cog):
                     print("Deleting!! RESPONSE ERROR:")
                     print(person)
                     print(user.user_id)
-                    #session.delete(user)
+                    # session.delete(user)
                     continue
                 if not_aero(person):
                     await duser.send(config.MSG_AERO_ONLY)
@@ -47,51 +46,7 @@ class TaskNewUser(commands.Cog):
                     continue
 
                 cadeiras = fenix_client.get_person_courses(user)
-                nomes_cadeiras = []
-                new_roles = []
                 user_roles = duser.roles
-
-                # first timer. add to the correct year discussion channel
-                if initialized is False:
-                    first_enroll = get_first_enrollment(person)
-                    if first_enroll:
-                        year_role = await get_or_create_year_role(first_enroll, self.bot)
-                        await duser.add_roles(year_role)
-                        await duser.send(format_msg(config.MSG_ADDED_CHANNEL_YEAR, {'first_enroll': first_enroll}))
-                    try:
-                        print("Welcoming " + person["name"])
-                        names = person["name"].split(" ")
-                        await duser.edit(nick=names[0] + " " + names[-1])
-                    except Forbidden:
-                        pass
-
-                # Loop through courses
-                if "enrolments" not in cadeiras:
-                    continue
-                for cadeira in cadeiras["enrolments"]:
-                    cadeira_id = int(cadeira["id"])
-                    db_cadeira = session.query(Cadeira).get(cadeira_id)
-                    # Create channel for course if it doesn't exist
-                    if db_cadeira is None:
-                        db_cadeira = await criar_cadeira(cadeira_id, self.bot)
-
-                    # Get (or create) role for this course
-                    role = guild.get_role(db_cadeira.role_id)
-                    channel = guild.get_channel(db_cadeira.channel_id)
-
-                    # in case either the channel or the role was deleted
-                    if channel is None or role is None:
-                        session.delete(db_cadeira)
-                        db_cadeira = await criar_cadeira(cadeira_id, self.bot)
-                        role = guild.get_role(db_cadeira.role_id)
-                    if role and role not in user_roles:
-                        nomes_cadeiras.append(db_cadeira.name)
-                        new_roles.append(role)
-                    elif role:
-                        user_roles.remove(role)
-                if new_roles:
-                    await duser.add_roles(*new_roles)
-
                 # look for roles from old cadeiras
                 remove_roles = []
                 for role in user_roles:
@@ -102,16 +57,26 @@ class TaskNewUser(commands.Cog):
                 if remove_roles:
                     await duser.remove_roles(*remove_roles)
 
-                user.initialized = True
-                if nomes_cadeiras:
-                    await duser.send(format_msg(config.MSG_ADDED_CHANNEL_COURSES, {'courses': ', '.join(nomes_cadeiras)}))
-                if initialized is False:
-                    auth_role = await get_or_create_role(guild, config.ROLE_AUTH_NAME)
-                    await duser.add_roles(auth_role)
-                    await duser.send(config.BOT_AUTH_SUCCESS)
-        if users:
-            session.commit()
+                # first timer. add to the correct year discussion channel
+                first_enroll = get_first_enrollment(person)
+                if first_enroll:
+                    year_role = await get_or_create_year_role(first_enroll, self.bot)
+                    await duser.add_roles(year_role)
+                    await duser.send(format_msg(config.MSG_ADDED_CHANNEL_YEAR, {'first_enroll': first_enroll}))
+                try:
+                    print("Welcoming " + person["name"])
+                    names = person["name"].split(" ")
+                    await duser.edit(nick=names[0] + " " + names[-1])
+                except Forbidden:
+                    pass
 
+                # Loop through courses
+                await process_enrollments(cadeiras, duser, self.bot)
+
+                user.initialized = True
+                auth_role = await get_or_create_role(guild, config.ROLE_AUTH_NAME)
+                await duser.add_roles(auth_role)
+                await duser.send(config.BOT_AUTH_SUCCESS)
 
     # this task adds new users
     @tasks.loop(seconds=config.NEW_USER_INTERVAL)
@@ -120,15 +85,6 @@ class TaskNewUser(commands.Cog):
 
     @newusers.before_loop
     async def before_newusers(self):
-        await self.bot.wait_until_ready()
-
-    # this task updates existing users' info
-    @tasks.loop(minutes=config.UPDATE_USER_INTERVAL)
-    async def existingusers(self):
-        await self.update_users(True)
-
-    @existingusers.before_loop
-    async def before_existingusers(self):
         await self.bot.wait_until_ready()
 
 

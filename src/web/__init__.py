@@ -2,7 +2,7 @@ import config
 from flask import Flask, request
 from fenix import fenix_client
 
-from database import session, User, init_db
+from database import session_scope, User, init_db
 
 app = Flask(__name__)
 init_db()
@@ -20,10 +20,11 @@ def auth():
         user_info = fenix_client.get_user_by_code(code)
     except:
         return config.WEB_ERROR
-    user = session.query(User).get(user_id)
-    if user:
-        session.delete(user)
-    user = User(user_id, user_info.access_token, user_info.refresh_token, user_info.token_expires)
-    session.add(user)
-    session.commit()
-    return config.WEB_SUCCESS
+    with session_scope() as session:
+        user = session.query(User).get(user_id)
+        if user:
+            session.delete(user)
+            session.commit()
+        user = User(user_id, user_info.access_token, user_info.refresh_token, user_info.token_expires)
+        session.add(user)
+        return config.WEB_SUCCESS

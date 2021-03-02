@@ -2,7 +2,7 @@ import calendar
 
 import config
 from fenix import fenix_client
-from database import session, Cadeira
+from database import session_scope, Cadeira
 import discord
 import pytz
 import datetime
@@ -33,7 +33,8 @@ async def get_or_create_channel(guild, cat, name, overwrites, cati=0):
         if dchannel.name == name:
             return dchannel
     if cat and len(cat.channels) >= 50:
-        cat2 = await get_or_create_category(guild, cat.name, overwrites[guild.default_role] if guild.default_role in overwrites else [], cati + 1)
+        cat2 = await get_or_create_category(guild, cat.name, discord.PermissionOverwrite(read_messages=False,
+                                                                                         send_messages=False), cati + 1)
         return await get_or_create_channel(guild, cat2, name, overwrites, cati + 1)
     overwrites[guild.default_role] = discord.PermissionOverwrite(read_messages=False, send_messages=False)
     return await guild.create_text_channel(name, overwrites=overwrites, category=cat)
@@ -71,8 +72,9 @@ async def criar_cadeira(cadeira_id, bot):
     # Adicionar cadeira à base de dados
     db_cadeira = Cadeira(cadeira_id, cadeira["acronym"], cadeira["name"], cadeira["academicTerm"],
                          cadeira["announcementLink"], dchannel.id, drole.id)
-    session.add(db_cadeira)
-    session.commit()
+    with session_scope() as session:
+        session.add(db_cadeira)
+    print("Created")
 
     return db_cadeira
 
@@ -93,6 +95,46 @@ async def get_or_create_year_role(year, bot):
                                 {drole: discord.PermissionOverwrite(read_messages=True, send_messages=True)})
     # Return the role
     return drole
+
+
+async def process_enrollments(cadeiras, duser, bot):
+    if "enrolments" in cadeiras:
+        nomes_cadeiras = []
+        new_roles = []
+        user_roles = duser.roles
+        with session_scope() as session:
+            for cadeira in cadeiras["enrolments"]:
+                cadeira_id = int(cadeira["id"])
+                db_cadeira = session.query(Cadeira).get(cadeira_id)
+                # Create channel for course if it doesn't exist
+                if db_cadeira is None:
+                    db_cadeira = await criar_cadeira(cadeira_id, bot)
+
+                # Get (or create) role for this course
+                guild = bot.get_guild(config.BOT_GUILD)
+                role = guild.get_role(db_cadeira.role_id)
+                channel = guild.get_channel(db_cadeira.channel_id)
+
+                # in case either the channel or the role was deleted
+                if channel is None or role is None:
+                    session.delete(db_cadeira)
+                    session.commit()
+                    db_cadeira = await criar_cadeira(cadeira_id, bot)
+                    role = guild.get_role(db_cadeira.role_id)
+                if role and role not in user_roles:
+                    nomes_cadeiras.append(db_cadeira.name)
+                    new_roles.append(role)
+                elif role:
+                    user_roles.remove(role)
+            if new_roles:
+                await duser.add_roles(*new_roles)
+
+            if nomes_cadeiras:
+                try:
+                    await duser.send(
+                        format_msg(config.MSG_ADDED_CHANNEL_COURSES, {'courses': ', '.join(nomes_cadeiras)}))
+                except discord.errors.Forbidden:
+                    print("Could not send new courses message.")
 
 
 # returns registrations (Student or alumni) for our FENIX_DEGREE

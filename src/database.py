@@ -3,18 +3,33 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.types import DateTime, Boolean
+from contextlib import contextmanager
 
 import config
 
 engine = create_engine(config.DATABASE_URL)
-Session = sessionmaker(bind=engine)
+Session = sessionmaker(bind=engine, expire_on_commit=False)
 Base = declarative_base()
-session = Session()
 
 
 def init_db():
     Base.metadata.create_all(engine)
-    session.commit()
+    with session_scope() as session:
+        session.commit()
+
+
+@contextmanager
+def session_scope():
+    """Provide a transactional scope around a series of operations."""
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 
 
 class User(Base):
@@ -25,6 +40,7 @@ class User(Base):
     refresh_token = Column(String)
     token_expires = Column(Integer)
     initialized = Column(Boolean, default=False)
+    new_semester = Column(Boolean, default=True)
 
     def __init__(self, user_id, access_token, refresh_token, token_expires):
         self.user_id = user_id
