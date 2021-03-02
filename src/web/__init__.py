@@ -23,8 +23,10 @@ def auth():
     with session_scope() as session:
         user = session.query(User).get(user_id)
         if user:
-            session.delete(user)
-            session.commit()
-        user = User(user_id, user_info.access_token, user_info.refresh_token, user_info.token_expires)
-        session.add(user)
+            user.access_token = user_info.access_token
+            user.refresh_token = user.refresh_token
+            user.new_semester = True
+        else:
+            user = User(user_id, user_info.access_token, user_info.refresh_token, user_info.token_expires)
+            session.add(user)
         return config.WEB_SUCCESS

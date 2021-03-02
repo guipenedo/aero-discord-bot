@@ -74,7 +74,6 @@ async def criar_cadeira(cadeira_id, bot):
                          cadeira["announcementLink"], dchannel.id, drole.id)
     with session_scope() as session:
         session.add(db_cadeira)
-    print("Created")
 
     return db_cadeira
 

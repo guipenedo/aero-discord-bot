@@ -1,9 +1,10 @@
+import discord
 from discord.ext import tasks, commands
 
 import config
 from database import session_scope, User
 from fenix import fenix_client
-from .utils import process_enrollments
+from .utils import process_enrollments, get_auth_url
 
 
 class TaskUserNewSemester(commands.Cog):
@@ -30,11 +31,13 @@ class TaskUserNewSemester(commands.Cog):
                 return
             person = fenix_client.get_person(user)
             if "error" in person and "accessTokenInvalid" in person["error"]:
-                print("Deleting!! RESPONSE ERROR:")
-                print(person)
-                print(user.user_id)
-                # TODO: send link
-                # session.delete(user)
+                # fenix api token error: resend link
+                try:
+                    await duser.send("Não foi possível atualizar automaticamente a tua lista de cadeiras. Por favor volta a autenticar-te clicando em:\n"
+                                     + get_auth_url(duser))
+                except discord.errors.Forbidden:
+                    pass
+                user.new_semester = True
                 return
 
             cadeiras = fenix_client.get_person_courses(user)
