@@ -25,7 +25,7 @@ def auth():
         if user:
             user.access_token = user_info.access_token
             user.refresh_token = user.refresh_token
-            user.new_semester = True
+            user.new_semester = False
         else:
             user = User(user_id, user_info.access_token, user_info.refresh_token, user_info.token_expires)
             session.add(user)
