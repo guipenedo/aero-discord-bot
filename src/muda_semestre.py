@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 
 import config
-from database import init_db, session_scope, User
+from database import init_db, session_scope, User, Cadeira
+import time
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX, intents=intents)
@@ -12,8 +13,9 @@ bot = commands.Bot(command_prefix=config.BOT_CMD_PREFIX, intents=intents)
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
     init_db()
-    """
+
     cadeiras_cats = []
+    guild = bot.get_guild(config.BOT_GUILD)
     for cat in guild.categories:
         if cat.name.lower() == config.COURSES_DISC_CATEGORY_NAME.lower():
             cadeiras_cats.append(cat)
@@ -33,11 +35,8 @@ async def on_ready():
             if role:
                 await role.delete()
             time.sleep(1)
-        print("deleting all")
-        return
         num_rows_deleted = session.query(Cadeira).delete()
-        return
-        print("Deleted", num_rows_deleted, "cadeiras.")"""
+        print("Deleted", num_rows_deleted, "cadeiras.")
     with session_scope() as session:
         # mark all as not updated
         session.query(User).filter(User.initialized).update({User.new_semester: False})
