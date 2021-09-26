@@ -35,10 +35,7 @@ class TaskNewUser(commands.Cog):
                     continue
                 person = fenix_client.get_person(user)
                 if "error" in person and "accessTokenInvalid" in person["error"]:
-                    print("Deleting!! RESPONSE ERROR:")
-                    print(person)
-                    print(user.user_id)
-                    # session.delete(user)
+                    session.delete(user)
                     continue
                 if not_aero(person):
                     await duser.send(config.MSG_AERO_ONLY)

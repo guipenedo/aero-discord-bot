@@ -136,18 +136,18 @@ async def process_enrollments(cadeiras, duser, bot):
                     print("Could not send new courses message.")
 
 
-# returns registrations (Student or alumni) for our FENIX_DEGREE
+# returns registrations (Student or alumni) for our FENIX_DEGREES
 def get_registration(person):
     if "roles" not in person:
         return False
     for role in person["roles"]:
         if role["type"] == "STUDENT":
             for reg in role["registrations"]:
-                if int(reg["id"]) == int(config.FENIX_DEGREE):
+                if int(reg["id"]) in config.FENIX_DEGREES:
                     return reg
         elif role["type"] == "ALUMNI":
             for reg in role["concludedRegistrations"]:
-                if int(reg["id"]) == int(config.FENIX_DEGREE):
+                if int(reg["id"]) in config.FENIX_DEGREES:
                     return reg
     return None
 
