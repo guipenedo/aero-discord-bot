@@ -28,52 +28,53 @@ class TaskNewUser(commands.Cog):
 
             # Loop through users
             for user in users:
-                # Delete user from db if not in the guild
-                duser = guild.get_member(user.user_id)
-                if duser is None:
-                    session.delete(user)
-                    continue
-                person = fenix_client.get_person(user)
-                if "error" in person and "accessTokenInvalid" in person["error"]:
-                    session.delete(user)
-                    continue
-                if not_aero(person):
-                    await duser.send(config.MSG_AERO_ONLY)
-                    session.delete(user)
-                    continue
-
-                cadeiras = fenix_client.get_person_courses(user)
-                user_roles = duser.roles
-                # look for roles from old cadeiras
-                remove_roles = []
-                for role in user_roles:
-                    # check if this is a course role and not some random role
-                    if role in all_cadeiras_roles:
-                        remove_roles.append(role)
-                # remove them
-                if remove_roles:
-                    await duser.remove_roles(*remove_roles)
-
-                # first timer. add to the correct year discussion channel
-                first_enroll = get_first_enrollment(person)
-                if first_enroll:
-                    year_role = await get_or_create_year_role(first_enroll, self.bot)
-                    await duser.add_roles(year_role)
-                    await duser.send(format_msg(config.MSG_ADDED_CHANNEL_YEAR, {'first_enroll': first_enroll}))
                 try:
+                    # Delete user from db if not in the guild
+                    duser = guild.get_member(user.user_id)
+                    if duser is None:
+                        session.delete(user)
+                        continue
+                    person = fenix_client.get_person(user)
+                    if "error" in person and "accessTokenInvalid" in person["error"]:
+                        session.delete(user)
+                        continue
+                    if not_aero(person):
+                        await duser.send(config.MSG_AERO_ONLY)
+                        session.delete(user)
+                        continue
+
+                    cadeiras = fenix_client.get_person_courses(user)
+                    user_roles = duser.roles
+                    # look for roles from old cadeiras
+                    remove_roles = []
+                    for role in user_roles:
+                        # check if this is a course role and not some random role
+                        if role in all_cadeiras_roles:
+                            remove_roles.append(role)
+                    # remove them
+                    if remove_roles:
+                        await duser.remove_roles(*remove_roles)
+
+                    # first timer. add to the correct year discussion channel
+                    first_enroll = get_first_enrollment(person)
+                    if first_enroll:
+                        year_role = await get_or_create_year_role(first_enroll, self.bot)
+                        await duser.add_roles(year_role)
+                        await duser.send(format_msg(config.MSG_ADDED_CHANNEL_YEAR, {'first_enroll': first_enroll}))
+
                     print("Welcoming " + person["name"])
                     names = person["name"].split(" ")
                     await duser.edit(nick=names[0] + " " + names[-1])
+
+                    # Loop through courses
+                    await process_enrollments(cadeiras, duser, self.bot)
+
+                    user.initialized = True
+                    auth_role = await get_or_create_role(guild, config.ROLE_AUTH_NAME)
+                    await duser.add_roles(auth_role)
+                    await duser.send(config.BOT_AUTH_SUCCESS)
                 except Forbidden:
                     pass
-
-                # Loop through courses
-                await process_enrollments(cadeiras, duser, self.bot)
-
-                user.initialized = True
-                auth_role = await get_or_create_role(guild, config.ROLE_AUTH_NAME)
-                await duser.add_roles(auth_role)
-                await duser.send(config.BOT_AUTH_SUCCESS)
 
     # this task adds new users
     @tasks.loop(seconds=config.NEW_USER_INTERVAL)
